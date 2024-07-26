@@ -5,6 +5,7 @@ import di.customexceptions.email.EmailAlreadyUsedException;
 import di.customexceptions.telephone.TelephoneAlreadyExistException;
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.model.entity.telephone.Telephone;
@@ -21,8 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+
+@Transactional
 @Service
 public class UserService {
+
     private final UserRepository repository;
     private final TelephoneRepository telephoneRepository;
     private final PasswordEncoder passwordEncoder;
@@ -38,8 +42,8 @@ public class UserService {
     }
 
 
-    @Transactional
-    public ResponseUser createUser(RegularUser user) {
+    // region REGULAR USER
+    public ResponseUser createRegularUser(RegularUser user) {
         //TODO доделать validator
         Set<ConstraintViolation<Telephone>> validation = validator.validate(user.getTelephone());
         if (!validation.isEmpty()) {
@@ -54,33 +58,37 @@ public class UserService {
         requestUser.setEmail(user.getEmail());
         requestUser.setPassword(user.getPassword());
 
-        Telephone telephone = new Telephone(user.getTelephone().getNumber());
-        telephone.setUser(requestUser);
+        Telephone telephone = createAndLinkTelephone(user.getTelephone().getNumber(),requestUser);
         requestUser.setTelephone(telephone);
 
         return convertUserToResponseUser(repository.save(requestUser));
     }
 
-    @Transactional
     public List<ResponseUser> getAllUsers() {
         return repository.findAll().stream().map(this::convertUserToResponseUser).toList();
     }
 
-    @Transactional
     public ResponseUser getUserByPhone(String number) {
         RegularUser user = repository.getByTelephone(number);
         return convertUserToResponseUser(user);
     }
 
 
-    //region методы конвертации обьектов.
-    private ResponseUser convertUserToResponseUser(RegularUser user) {
+
+    private ResponseUser convertUserToResponseUser(User user) {
         ResponseUser response = new ResponseUser();
         response.setId(user.getId());
         response.setName(user.getName());
-        response.setEmail(user.getEmail());
-        response.setPassword(user.getPassword());
-        response.setTelephone(user.getTelephone());
+        if(user instanceof  RegularUser){
+            response.setEmail(((RegularUser) user).getEmail());
+            response.setPassword(((RegularUser) user).getPassword());
+            response.setTelephone(((RegularUser) user).getTelephone());
+        }
+        if(user instanceof GuestUser){
+            response.setEmail(((GuestUser) user).getEmail());
+            response.setTelephone(((GuestUser) user).getTelephone());
+
+        }
         return response;
     }
 
@@ -93,7 +101,8 @@ public class UserService {
         return responseUser;
     }
     //endregion
-//region 26/04/2024
+
+    //region 26/04/2024
 
     /**
      * Регистрирует нового пользователя, проверяя, что электронная почта и телефонный номер еще не использовались.
@@ -104,7 +113,6 @@ public class UserService {
      * @throws TelephoneAlreadyExistException если указанный телефонный номер уже зарегистрирован.
      */
 
-    @Transactional
     public ResponseRegistryUser registerUser(ResponseUser user) {
         checkValidData(user);
         RegularUser registerUser = new RegularUser();
@@ -131,4 +139,49 @@ public boolean checkValidData(ResponseUser user) {
     return true;
 }
 // endregion
+
+    //region GUEST USER
+    public ResponseUser createGuestUser(GuestUser user) {
+        //TODO доделать validator
+        Set<ConstraintViolation<Telephone>> validation = validator.validate(user.getTelephone());
+        if (!validation.isEmpty()) {
+            throw new ConstraintViolationException(validation);
+        }
+
+        if (telephoneRepository.existsByNumber(user.getTelephone().getNumber())) {
+            throw new TelephoneAlreadyExistException("Telephone number already exist");
+        }
+
+        GuestUser requestUser = new GuestUser();
+        requestUser.setName(user.getName());
+        requestUser.setEmail(user.getEmail());
+
+        Telephone telephone = createAndLinkTelephone(user.getTelephone().getNumber(),requestUser);
+        requestUser.setTelephone(telephone);
+        return convertGuestToResponseUser(repository.save(requestUser));
+    }
+    private ResponseUser convertGuestToResponseUser(GuestUser user) {
+        ResponseUser response = new ResponseUser();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setTelephone(user.getTelephone());
+        return response;
+    }
+    private ResponseRegistryUser convertGuestToResponseRegistryUser(GuestUser user) {
+        ResponseRegistryUser responseUser = new ResponseRegistryUser();
+        responseUser.setEmail(user.getEmail());
+        responseUser.setName(user.getName());
+        responseUser.setId(user.getId());
+        responseUser.setTelephone(user.getTelephone().getNumber());
+        return responseUser;
+    }
+    //endregion
+    //region Add telephone to user
+    private Telephone createAndLinkTelephone(String number, User user) {
+        Telephone telephone = new Telephone(number);
+        telephone.setUser(user);
+        return telephone;
+    }
+    //endregion
 }

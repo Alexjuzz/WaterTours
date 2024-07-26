@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<RegularUser, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM  User u WHERE u.telephone.number = :number")
     RegularUser getByTelephone(@Param("number") String telephone);
     @Query("SELECT u FROM  User u WHERE u.name = :name")

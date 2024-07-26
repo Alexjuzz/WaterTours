@@ -49,7 +49,8 @@ public class FacadeController {
 
     @PostMapping("/user/create")
     public ResponseEntity<ResponseUser> createUser(@RequestBody RegularUser user) {
-        return ResponseEntity.ok(userService.createUser(user));
+//        return ResponseEntity.ok(userService.createUser(user));
+    return null;
     }
 
     //endregion

@@ -2,6 +2,7 @@ package di.controller.user;
 
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import jakarta.validation.Valid;
@@ -14,8 +15,11 @@ import java.util.List;
 @RequestMapping("/user")
 public interface iUserController{
 
-    @PostMapping("/createUser")
-    public ResponseEntity<ResponseUser> createUser(@Valid @RequestBody RegularUser user);
+    @PostMapping("/createRegularUser")
+    public ResponseEntity<ResponseUser> createRegularUser(@Valid @RequestBody RegularUser user);
+    @PostMapping("/createGuestUser")
+    public ResponseEntity<ResponseUser> createGuestUser(@Valid @RequestBody GuestUser user);
+
 
 
 

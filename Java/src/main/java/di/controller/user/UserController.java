@@ -3,10 +3,9 @@ package di.controller.user;
 import di.customexceptions.user.UserEmptyResultDataException;
 import di.customexceptions.user.UserNotFoundException;
 import di.emailsevice.service.EmailService;
-import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
-import di.model.entity.user.User;
 import di.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +28,15 @@ public class UserController implements iUserController {
     }
 
 
-    @Override
-    public ResponseEntity<ResponseUser> createUser(@Valid RegularUser user) {
-        return ResponseEntity.ok(service.createUser(user));
+    public ResponseEntity<ResponseUser> createRegularUser(@Valid RegularUser user) {
+        return ResponseEntity.ok(service.createRegularUser(user));
     }
 
+
+    @Override
+    public ResponseEntity<ResponseUser> createGuestUser(GuestUser user) {
+       return ResponseEntity.ok(service.createGuestUser(user));
+    }
 
     @Override
     public ResponseEntity<List<ResponseUser>> getAllUsers() {
