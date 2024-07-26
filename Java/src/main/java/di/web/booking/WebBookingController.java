@@ -8,6 +8,7 @@ import di.model.dto.user.LoginUser;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.booking.Booking;
 import di.model.entity.seats.Seat;
+import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.repository.user.UserRepository;
 import di.web.user.WebUserService;
@@ -41,7 +42,7 @@ public class WebBookingController {
 
     @PostMapping("/booking/{seatId}")
     public String setBookingToSeat(@RequestParam Long seatId, @RequestParam("time") BookingTime time, String name, String email, String phone, Model model) {
-        User user = service.findByPhone(phone);
+       RegularUser user = service.findByPhone(phone);
         if (user == null) {
             throw new UserNotFoundException("user not found");
         }

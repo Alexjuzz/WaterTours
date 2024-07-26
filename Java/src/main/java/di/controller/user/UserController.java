@@ -5,6 +5,7 @@ import di.customexceptions.user.UserNotFoundException;
 import di.emailsevice.service.EmailService;
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.service.user.UserService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class UserController implements iUserController {
 
 
     @Override
-    public ResponseEntity<ResponseUser> createUser(@Valid User user) {
+    public ResponseEntity<ResponseUser> createUser(@Valid RegularUser user) {
         return ResponseEntity.ok(service.createUser(user));
     }
 

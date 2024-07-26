@@ -14,6 +14,7 @@ import di.model.entity.boats.Boat;
 import di.model.entity.booking.Booking;
 import di.model.entity.seats.Seat;
 import di.model.entity.telephone.Telephone;
+import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.repository.boat.BoatRepository;
 import di.repository.booking.BookingRepository;
@@ -45,7 +46,7 @@ public class WebBookingService {
         this.seatRepository = seatRepository;
     }
 
-    public ResponseBooking makeBooking(Long seatId, BookingTime time,User user){
+    public ResponseBooking makeBooking(Long seatId, BookingTime time, RegularUser user){
 
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new SeatNotFoundException("Seat with ID: " + seatId + " not found"));

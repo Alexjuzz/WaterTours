@@ -25,7 +25,7 @@ public class WebUserService {
 
     @Transactional
     public ResponseUser registerUser(ResponseUser responseUser){
-        User user = convertResponseUserToUser(responseUser);
+        RegularUser user = convertResponseUserToUser(responseUser);
         Telephone tel = new Telephone();
         tel.setUser(user);
         tel.setNumber(user.getTelephone().getNumber());
@@ -35,7 +35,7 @@ public class WebUserService {
     }
 
     public boolean authenticate(String username, String email,String password){
-        Optional<User> user = userRepository.getByUserName(username);
+        Optional<RegularUser> user = userRepository.getByUserName(username);
         if(user.isPresent()){
             ResponseUser responseUser = convertUserToResponseUser(user.get());
             System.out.println(responseUser.getPassword() +  " "  + responseUser.getName());
@@ -46,7 +46,7 @@ public class WebUserService {
 
 
 
-    private ResponseUser convertUserToResponseUser(User user) {
+    private ResponseUser convertUserToResponseUser(RegularUser user) {
         ResponseUser response = new ResponseUser();
         response.setId(user.getId());
         response.setName(user.getName());
@@ -59,8 +59,8 @@ public class WebUserService {
 
 
 
-    public User convertResponseUserToUser(ResponseUser responseUser) {
-        User user = new User();
+    public RegularUser convertResponseUserToUser(ResponseUser responseUser) {
+       RegularUser user = new RegularUser();
         user.setEmail(responseUser.getEmail());
         user.setPassword(responseUser.getPassword());
         user.setTelephone(responseUser.getTelephone());
@@ -68,7 +68,7 @@ public class WebUserService {
         return user;
     }
 
-    public  User findByPhone(String phone) {
+    public  RegularUser findByPhone(String phone) {
      return    userRepository.getByTelephone(phone);
     }
 }

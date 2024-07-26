@@ -7,6 +7,7 @@ import di.model.dto.booking.ResponseBooking;
 import di.model.dto.seat.ResponseSeat;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.seats.Seat;
+import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.service.boat.BoatService;
 import di.service.booking.BookingService;
@@ -47,7 +48,7 @@ public class FacadeController {
     }
 
     @PostMapping("/user/create")
-    public ResponseEntity<ResponseUser> createUser(@RequestBody  User user) {
+    public ResponseEntity<ResponseUser> createUser(@RequestBody RegularUser user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 

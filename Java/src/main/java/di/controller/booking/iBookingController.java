@@ -35,7 +35,5 @@ public interface iBookingController {
     ResponseEntity<String> cancelReservation(@RequestParam("seatId") Long seatId,
                                              @RequestParam("bookingTime") BookingTime bookingTime,
                                              @RequestParam("phoneNumber") String phoneNumber);
-    @PostMapping
-    @RequestMapping("/reservation")
-    ResponseEntity<String> reservationTicket(RequestBody)
+
 }

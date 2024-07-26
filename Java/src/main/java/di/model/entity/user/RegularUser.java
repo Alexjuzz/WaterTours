@@ -1,57 +1,24 @@
 package di.model.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import di.model.entity.telephone.Telephone;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
+@Entity
+@DiscriminatorValue("Regular")
 public class RegularUser extends User{
-    @Override
-    public Long getId() {
-        return super.getId();
-    }
+    @Column(name = "email",nullable = false,length = 250)
+    private String email;
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Telephone telephone;
 
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
-    }
-
-    @Override
-    public void setId(Long id) {
-        super.setId(id);
-    }
-
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-    }
-
-
-
-    @Override
-    public void setEmail(String email) {
-        super.setEmail(email);
-    }
-
-
-
-    @Override
-    public void setPassword(String password) {
-        super.setPassword(password);
-    }
+    @Column(name = "password",nullable = false)
+    private String password;
 }

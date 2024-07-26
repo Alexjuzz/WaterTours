@@ -2,6 +2,7 @@ package di.controller.user;
 
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface iUserController{
 
     @PostMapping("/createUser")
-    public ResponseEntity<ResponseUser> createUser(@Valid @RequestBody User user);
+    public ResponseEntity<ResponseUser> createUser(@Valid @RequestBody RegularUser user);
 
 
 

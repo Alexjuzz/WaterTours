@@ -39,7 +39,7 @@ public class UserService {
 
 
     @Transactional
-    public ResponseUser createUser(User user) {
+    public ResponseUser createUser(RegularUser user) {
         //TODO доделать validator
         Set<ConstraintViolation<Telephone>> validation = validator.validate(user.getTelephone());
         if (!validation.isEmpty()) {
@@ -49,7 +49,7 @@ public class UserService {
         if (telephoneRepository.existsByNumber(user.getTelephone().getNumber())) {
             throw new TelephoneAlreadyExistException("Telephone number already exist");
         }
-        User requestUser = new User();
+       RegularUser requestUser = new RegularUser();
         requestUser.setName(user.getName());
         requestUser.setEmail(user.getEmail());
         requestUser.setPassword(user.getPassword());
@@ -68,13 +68,13 @@ public class UserService {
 
     @Transactional
     public ResponseUser getUserByPhone(String number) {
-        User user = repository.getByTelephone(number);
+        RegularUser user = repository.getByTelephone(number);
         return convertUserToResponseUser(user);
     }
 
 
     //region методы конвертации обьектов.
-    private ResponseUser convertUserToResponseUser(User user) {
+    private ResponseUser convertUserToResponseUser(RegularUser user) {
         ResponseUser response = new ResponseUser();
         response.setId(user.getId());
         response.setName(user.getName());
@@ -84,7 +84,7 @@ public class UserService {
         return response;
     }
 
-    private ResponseRegistryUser convertUserToResponseRegistryUser(User user) {
+    private ResponseRegistryUser convertUserToResponseRegistryUser(RegularUser user) {
         ResponseRegistryUser responseUser = new ResponseRegistryUser();
         responseUser.setEmail(user.getEmail());
         responseUser.setName(user.getName());
@@ -107,7 +107,7 @@ public class UserService {
     @Transactional
     public ResponseRegistryUser registerUser(ResponseUser user) {
         checkValidData(user);
-        User registerUser = new User();
+        RegularUser registerUser = new RegularUser();
         registerUser.setEmail(user.getEmail());
         registerUser.setName(user.getName());
         registerUser.setPassword(passwordEncoder.encode(user.getPassword()));
