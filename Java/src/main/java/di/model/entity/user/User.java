@@ -16,19 +16,20 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
-public abstract class User  {
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name",nullable = false,length = 40)
+
+    @Column(name = "name", nullable = false, length = 40)
     private String name;
 
-    @Column(name = "tickets")
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<AbstractTicket> userTickets = new ArrayList<>();
-    @OneToOne(mappedBy = "users",cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Telephone telephone;
 }

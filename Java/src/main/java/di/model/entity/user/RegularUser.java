@@ -8,9 +8,11 @@ import lombok.Data;
 @Data
 @Entity
 @DiscriminatorValue("Regular")
-public class RegularUser extends User{
-    @Column(name = "email",nullable = false,length = 250)
+public class RegularUser extends User {
+
+    @Column(name = "email", nullable = false, length = 250)
     private String email;
-    @Column(name = "password",nullable = false)
+
+    @Column(name = "password", nullable = false)
     private String password;
 }
