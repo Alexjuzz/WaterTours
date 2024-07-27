@@ -1,5 +1,6 @@
 package di.repository.user;
 
+import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<RegularUser> getByUserName(@Param("name") String name);
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<RegularUser> getUserByEmail(@Param("email") String email);
-
+    @Query("SELECT u FROM  User u WHERE u.telephone.number = :number")
+    Optional<GuestUser> getGuestUserByTelephone(@Param("number") String telephone);
 }

@@ -7,6 +7,8 @@ import di.model.dto.booking.ResponseBooking;
 import di.model.dto.seat.ResponseSeat;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.seats.Seat;
+import di.model.entity.ticket.AbstractTicket;
+import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.service.boat.BoatService;
@@ -48,7 +50,7 @@ public class FacadeController {
     }
 
     @PostMapping("/user/create")
-    public ResponseEntity<ResponseUser> createUser(@RequestBody RegularUser user) {
+    public ResponseEntity<ResponseUser> createUser(@RequestBody User user) {
 //        return ResponseEntity.ok(userService.createUser(user));
     return null;
     }
@@ -96,6 +98,14 @@ public class FacadeController {
     public ResponseEntity<List<Seat>> getSeatByBoatId(@PathVariable Long boatId){
         return ResponseEntity.ok(boatService.getSeatsByBoatId(boatId));
     }
+    //endregion
+
+    //region Fast reservation API REGION
+        @PostMapping("/purchase/quick")
+        public  ResponseEntity<String> quickPurchase(@RequestBody GuestUser user, @RequestParam String typeTicket){
+            userService.quickPurchase(user,typeTicket);
+        return ResponseEntity.ok("Successful buy");
+        }
     //endregion
 }
 

@@ -5,6 +5,10 @@ import di.customexceptions.email.EmailAlreadyUsedException;
 import di.customexceptions.telephone.TelephoneAlreadyExistException;
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
+import di.model.entity.ticket.AbstractTicket;
+import di.model.entity.ticket.AdultTicket;
+import di.model.entity.ticket.ChildTicket;
+import di.model.entity.ticket.SeniorTicket;
 import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -177,11 +182,51 @@ public boolean checkValidData(ResponseUser user) {
         return responseUser;
     }
     //endregion
+
+
     //region Add telephone to user
     private Telephone createAndLinkTelephone(String number, User user) {
         Telephone telephone = new Telephone(number);
         telephone.setUser(user);
         return telephone;
+    }
+    //endregion
+
+    //region Quick Purchase
+    public void quickPurchase(GuestUser user, String typeTicket) {
+        AbstractTicket ticket;
+        if(typeTicket.equals("Adult")){
+             ticket = new AdultTicket();
+        }else if(typeTicket.equals("Child")){
+             ticket = new ChildTicket();
+        }else if(typeTicket.equals("Senior")){
+             ticket = new SeniorTicket();
+        }else {
+            //TODO Доделать обработку не правльного выбора.
+            throw  new RuntimeException();
+        }
+        Optional<GuestUser> getUserOptional =   repository.getGuestUserByTelephone(user.getTelephone().toString());
+        if(getUserOptional.isPresent()){
+
+            GuestUser guestUser = getUserOptional.get();
+
+            //TODO доделать обработку отсутвия имейла, либо сделать через смс.
+            if(guestUser.getEmail().isEmpty()){
+                throw  new RuntimeException();
+            }
+
+            guestUser.getUserTickets().add(ticket);
+            ticket.setUser(guestUser);
+            repository.save(guestUser);
+        }else {
+            GuestUser guestUser = new GuestUser();
+            guestUser.setTelephone(user.getTelephone());
+            guestUser.setName(user.getName());
+            guestUser.setEmail(user.getEmail());
+            guestUser.getUserTickets().add(ticket);
+            ticket.setUser(guestUser);
+            repository.save(guestUser);
+        }
     }
     //endregion
 }

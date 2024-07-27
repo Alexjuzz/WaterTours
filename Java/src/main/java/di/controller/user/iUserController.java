@@ -40,4 +40,6 @@ public interface iUserController{
     //------------------------------------------------
     @PostMapping("/register")
     public  ResponseEntity<?> registerUser(@Valid @RequestBody ResponseUser registerUser,@RequestParam String type);
+
+
 }
