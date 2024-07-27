@@ -5,12 +5,13 @@ import lombok.Data;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-
 @DiscriminatorColumn(name = "ticket_type", discriminatorType = DiscriminatorType.STRING)
+
 public abstract class AbstractTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +24,10 @@ public abstract class AbstractTicket {
     private String phoneNumber;
     @Column
     private double discount;
-    @Column
+    @Column(updatable = false)
     private String dateStamp;
+    @Column(updatable = false, nullable = false)
+    private final UUID uniqueTicketId = UUID.randomUUID();
 
     @PrePersist
     protected void onCreate() {
