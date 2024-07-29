@@ -3,6 +3,7 @@ package di.service.user;
 
 import di.customexceptions.email.EmailAlreadyUsedException;
 import di.customexceptions.telephone.TelephoneAlreadyExistException;
+import di.emailsevice.service.EmailService;
 import di.model.dto.user.ResponseRegistryUser;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.ticket.AbstractTicket;
@@ -13,6 +14,7 @@ import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.model.entity.telephone.Telephone;
+import di.repository.TicketRepository;
 import di.repository.telephone.TelephoneRepository;
 import di.repository.user.UserRepository;
 import jakarta.validation.ConstraintViolation;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Transactional
@@ -35,15 +38,19 @@ public class UserService {
     private final UserRepository repository;
     private final TelephoneRepository telephoneRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final TicketRepository ticketRepository;
 
     @Autowired
     private Validator validator;
 
     @Autowired
-    public UserService(UserRepository repository, TelephoneRepository telephoneRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repository, TelephoneRepository telephoneRepository, PasswordEncoder passwordEncoder, EmailService emailService, TicketRepository ticketRepository) {
         this.repository = repository;
         this.telephoneRepository = telephoneRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.ticketRepository = ticketRepository;
     }
 
 
@@ -191,7 +198,7 @@ public boolean checkValidData(ResponseUser user) {
         return telephone;
     }
     //endregion
-
+    //TODO добвить проверку билетов через repository.
     //region Quick Purchase
     public void quickPurchase(GuestUser user, String typeTicket) {
         AbstractTicket ticket;
@@ -206,27 +213,46 @@ public boolean checkValidData(ResponseUser user) {
             throw  new RuntimeException();
         }
         Optional<GuestUser> getUserOptional =   repository.getGuestUserByTelephone(user.getTelephone().toString());
+        GuestUser guestUser;
         if(getUserOptional.isPresent()){
 
-            GuestUser guestUser = getUserOptional.get();
+            guestUser = getUserOptional.get();
 
             //TODO доделать обработку отсутвия имейла, либо сделать через смс.
             if(guestUser.getEmail().isEmpty()){
                 throw  new RuntimeException();
             }
 
-            guestUser.getUserTickets().add(ticket);
-            ticket.setUser(guestUser);
-            repository.save(guestUser);
         }else {
-            GuestUser guestUser = new GuestUser();
-            guestUser.setTelephone(user.getTelephone());
+
+            guestUser = new GuestUser();
+            guestUser.setTelephone(createAndLinkTelephone(user.getTelephone().getNumber(),guestUser));
             guestUser.setName(user.getName());
             guestUser.setEmail(user.getEmail());
-            guestUser.getUserTickets().add(ticket);
-            ticket.setUser(guestUser);
-            repository.save(guestUser);
+        }
+        guestUser.getUserTickets().add(ticket);
+        ticket.setUser(guestUser);
+
+        repository.save(guestUser);
+        try {
+            emailService.sendTicketToUser(guestUser,ticket);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
+
+    public boolean checkAvailableTicket(UUID ticket) {
+        Optional<AbstractTicket> responseTicket = ticketRepository.getTicketByUniqueCode(ticket);
+        if (responseTicket.isPresent()) {
+            AbstractTicket ticketObj = responseTicket.get();
+            if (ticketObj.isValid()) {
+                ticketObj.changeAvailableTicket();
+                ticketRepository.save(ticketObj);
+                return true;
+            }
+        }
+        return false;
+    }
+
     //endregion
 }

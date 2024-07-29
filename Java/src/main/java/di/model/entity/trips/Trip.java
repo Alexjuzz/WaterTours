@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "trip_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "trip")
-public abstract class Trip {
+public abstract class   Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

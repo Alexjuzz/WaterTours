@@ -18,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<RegularUser> getUserByEmail(@Param("email") String email);
     @Query("SELECT u FROM  User u WHERE u.telephone.number = :number")
     Optional<GuestUser> getGuestUserByTelephone(@Param("number") String telephone);
+
 }

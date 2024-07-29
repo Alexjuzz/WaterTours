@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -106,6 +107,14 @@ public class FacadeController {
             userService.quickPurchase(user,typeTicket);
         return ResponseEntity.ok("Successful buy");
         }
-    //endregion
+        @PostMapping("/check")
+        public ResponseEntity<String> checkAvailableTicket(@RequestParam UUID ticket){
+            if(userService.checkAvailableTicket(ticket)){
+            return ResponseEntity.ok("Билет проверен");
+            }
+            return ResponseEntity.badRequest().body("Билет не действителен или был использован.");
+        }
+        //endregion
+
 }
 

@@ -11,12 +11,17 @@ import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import di.model.entity.ticket.AbstractTicket;
 import di.service.generatorQR.GeneratorQR;
+import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 
+@Component
 public class PDFCreator {
 
-    public void createPdf(AbstractTicket ticket) throws Exception {
-        PdfWriter writer = new PdfWriter("C:\\Users\\user\\Desktop\\Диплом\\Project\\doc.pdf");
+    public byte[]  createPdf(AbstractTicket ticket) throws Exception {
+        ByteArrayOutputStream  response = new ByteArrayOutputStream();
+
+        PdfWriter writer = new PdfWriter(response);
 
         PdfDocument pdf = new PdfDocument(writer);
 
@@ -31,7 +36,7 @@ public class PDFCreator {
 
 
 
-        byte[] qrCode = GeneratorQR.generateQRCodeImage(ticket.getUniqueTicketId() + "\n" + ticket.getUser().getTelephone().getNumber());
+        byte[] qrCode = GeneratorQR.generateQRCodeImage(ticket.getUniqueTicketId().toString());
         ImageData imageData = ImageDataFactory.create(qrCode);
         Image qrImage = new Image(imageData);
         qrImage.setWidth(250);
@@ -55,5 +60,6 @@ public class PDFCreator {
         table.setFixedPosition(36,300 , pdf.getDefaultPageSize().getWidth() - 72);
         document.add(table);
         document.close();
+        return response.toByteArray();
     }
 }

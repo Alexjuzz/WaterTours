@@ -18,7 +18,7 @@ public class DataBaseManagement {
     public void clearTables() {
         try {
             entityManager.createNativeQuery("SET session_replication_role = 'replica';").executeUpdate();
-            List<String> entityNames = List.of("AbstractBoat", "Boat", "Booking", "Seat", "Trip","User","Telephone");
+            List<String> entityNames = List.of("AbstractBoat", "Boat", "Booking", "Seat", "Trip","User","Telephone","AbstractTicket");
             entityNames.forEach(entityName -> {
                 entityManager.createQuery("DELETE FROM " + entityName).executeUpdate();
             });
