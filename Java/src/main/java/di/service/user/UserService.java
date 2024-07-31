@@ -14,7 +14,7 @@ import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import di.model.entity.telephone.Telephone;
-import di.repository.TicketRepository;
+import di.repository.ticket.TicketRepository;
 import di.repository.telephone.TelephoneRepository;
 import di.repository.user.UserRepository;
 import jakarta.validation.ConstraintViolation;

@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
-public class FacadeController {
+public class FacadeController implements iFacadeController {
     private final BookingService bookingService;
     private final UserService userService;
     private final BoatService boatService;
