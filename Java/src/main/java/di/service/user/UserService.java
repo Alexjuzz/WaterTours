@@ -140,7 +140,6 @@ public class UserService {
     }
 
 
-
 public boolean checkValidData(ResponseUser user) {
     if (repository.getUserByEmail(user.getEmail()).isPresent()) {
         throw new EmailAlreadyUsedException("Email already used");

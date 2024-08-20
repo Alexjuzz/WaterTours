@@ -27,5 +27,4 @@ public class SecurityConfig {
                 // Включаем HTTP Basic аутентификацию с настройками по умолчанию
         return http.build();
     }
-
 }
