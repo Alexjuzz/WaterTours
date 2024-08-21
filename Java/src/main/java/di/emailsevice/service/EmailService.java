@@ -46,7 +46,7 @@ public class EmailService {
         sender.send(message);
     }
 
-    public void sendTicketToUser(GuestUser user, AbstractTicket ticket) throws Exception {
+    public void sendTicketToUser(User user, AbstractTicket ticket) throws Exception {
         sendTicketToUser(user.getEmail(), "test title", pdfCreator.createPdf(ticket));
     }
 }

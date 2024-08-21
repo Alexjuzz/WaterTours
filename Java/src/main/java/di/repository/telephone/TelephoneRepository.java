@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface TelephoneRepository extends JpaRepository<Telephone, Long> {
-    boolean existsByNumber(String number);
 
+    boolean existsByNumber(String number);
 
     @Query("SELECT t FROM  Telephone t WHERE t.number = :number")
     Optional<Telephone> getTelephoneByNumber(@Param("number") String number);

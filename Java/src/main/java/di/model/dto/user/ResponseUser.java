@@ -1,5 +1,6 @@
 package di.model.dto.user;
 
+import di.enums.Role;
 import di.model.entity.telephone.Telephone;
 import lombok.Data;
 
@@ -12,4 +13,5 @@ public class ResponseUser {
     private String email;
     private Telephone telephone;
     private String password;
+    private Role role;
 }

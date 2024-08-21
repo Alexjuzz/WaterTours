@@ -8,10 +8,11 @@ import di.model.entity.seats.Seat;
 import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.UUID;
-
+@RequestMapping("/api")
 public interface iFacadeController {
 
     //region USER API REGION

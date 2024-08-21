@@ -9,8 +9,8 @@ import java.util.List;
 
 //TODO : 1) Обработать возможные исключения и методы ответа.
 
-@RestController
 @RequestMapping("/booking")
+
 public interface iBookingController {
 
     @GetMapping

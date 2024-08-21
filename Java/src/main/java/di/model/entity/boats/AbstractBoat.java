@@ -36,7 +36,7 @@ public class AbstractBoat implements InterfaceShip {
 
     /**
      * Места - у каждого корабля есть свои места(сущность место) которые хранятся в листе
-     * Связь один ко многим
+     *
      */
     @OneToMany(mappedBy = "boat", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference

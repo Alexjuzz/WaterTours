@@ -1,6 +1,7 @@
 package di.model.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import di.enums.Role;
 import di.model.entity.telephone.Telephone;
 import di.model.entity.ticket.AbstractTicket;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
-public abstract class User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +33,11 @@ public abstract class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Telephone telephone;
+    @Column(name = "email", nullable = false, length = 250)
+    private String email;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+    @Column(name = "role", nullable = false)
+    private Role role;
 }

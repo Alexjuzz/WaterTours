@@ -1,7 +1,7 @@
 package di.model.entity.ticket;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import di.model.entity.user.GuestUser;
+import di.model.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +33,7 @@ public abstract class AbstractTicket {
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     @JsonBackReference
-    private GuestUser user;
+    private User user;
 
     @PrePersist
     //TODO Убрать публичность и сделать наследование protected.
