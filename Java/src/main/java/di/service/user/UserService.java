@@ -33,15 +33,13 @@ public class UserService {
 
     private final UserRepository repository;
     private final TelephoneRepository telephoneRepository;
-    private final EmailService emailService;
     private final TicketRepository ticketRepository;
     private Validator validator;
 
     @Autowired
-    public UserService(UserRepository repository, TelephoneRepository telephoneRepository, EmailService emailService, TicketRepository ticketRepository) {
+    public UserService(UserRepository repository, TelephoneRepository telephoneRepository, TicketRepository ticketRepository) {
         this.repository = repository;
         this.telephoneRepository = telephoneRepository;
-        this.emailService = emailService;
         this.ticketRepository = ticketRepository;
     }
 
@@ -166,46 +164,6 @@ public class UserService {
     //endregion
     //TODO добвить проверку билетов через repository.
     //region Quick Purchase
-    public void quickPurchase(User user, String typeTicket) {
-        AbstractTicket ticket;
-        if (typeTicket.equals("Adult")) {
-            ticket = new AdultTicket();
-        } else if (typeTicket.equals("Child")) {
-            ticket = new ChildTicket();
-        } else if (typeTicket.equals("Senior")) {
-            ticket = new SeniorTicket();
-        } else {
-            //TODO Доделать обработку не правльного выбора.
-            throw new RuntimeException();
-        }
-        Optional<User> getUserOptional = repository.getUserByTelephone(user.getTelephone().toString());
-        User guestUser;
-        if (getUserOptional.isPresent()) {
-
-            guestUser = getUserOptional.get();
-
-            //TODO доделать обработку отсутвия имейла, либо сделать через смс.
-            if (guestUser.getEmail().isEmpty()) {
-                throw new RuntimeException();
-            }
-
-        } else {
-
-            guestUser = new GuestUser();
-            guestUser.setTelephone(createAndLinkTelephone(user.getTelephone().getNumber(), guestUser));
-            guestUser.setName(user.getName());
-            guestUser.setEmail(user.getEmail());
-        }
-        guestUser.getUserTickets().add(ticket);
-        ticket.setUser(guestUser);
-
-        repository.save(guestUser);
-        try {
-            emailService.sendTicketToUser(guestUser, ticket);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public boolean checkAvailableTicket(UUID ticket) {
         Optional<AbstractTicket> responseTicket = ticketRepository.getTicketByUniqueCode(ticket);

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.UUID;
 @RequestMapping("/api")
-public interface iFacadeController {
+public interface iFacadecontroller {
 
     //region USER API REGION
     ResponseEntity<List<ResponseUser>> getAllUsers();
@@ -41,8 +41,6 @@ public interface iFacadeController {
     ResponseEntity<List<Seat>> getSeatByBoatId(Long boatId);
     //endregion
 
-    //region Fast reservation API REGION
-    ResponseEntity<String> quickPurchase(GuestUser user, String typeTicket);
 
     ResponseEntity<String> checkAvailableTicket(UUID ticket);
     //endregion

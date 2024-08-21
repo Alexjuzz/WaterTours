@@ -24,7 +24,6 @@ public class DataBaseManagement {
             });
             entityManager.createNativeQuery("SET session_replication_role = 'origin';").executeUpdate();
         } catch (Exception e) {
-            // Логирование или другие действия по обработке исключения
             System.out.println("Ошибка при очистке таблиц: " + e.getMessage());
         }
     }

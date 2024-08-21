@@ -2,16 +2,13 @@ package di.model.entity.seats;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import di.enums.BookingTime;
 import di.model.entity.boats.AbstractBoat;
-import di.model.entity.boats.Boat;
 import di.model.entity.booking.Booking;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Класс места

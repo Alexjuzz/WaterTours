@@ -1,6 +1,7 @@
 package di.controller.facadecontroller;
 
 
+import di.controller.payment.PaymentController;
 import di.enums.BookingTime;
 import di.model.dto.boats.ResponseBoat;
 import di.model.dto.booking.ResponseBooking;
@@ -19,18 +20,19 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
-public class FacadeController implements iFacadeController {
+public class FacadeController implements iFacadecontroller {
     private final BookingService bookingService;
     private final UserService userService;
     private final BoatService boatService;
+    private final PaymentController paymentController;
 
     @Autowired
 
-    public FacadeController(BookingService bookingService, UserService userService,BoatService boatService) {
+    public FacadeController(BookingService bookingService, UserService userService,BoatService boatService,PaymentController paymentController) {
         this.bookingService = bookingService;
         this.userService = userService;
         this.boatService = boatService;
+        this.paymentController = paymentController;
     }
 
     //region USER API REGION
@@ -97,20 +99,13 @@ public class FacadeController implements iFacadeController {
     }
     //endregion
 
-    //region Fast reservation API REGION
-        @PostMapping("/purchase/quick")
-        public  ResponseEntity<String> quickPurchase(@RequestBody GuestUser user, @RequestParam String typeTicket){
-            userService.quickPurchase(user,typeTicket);
-        return ResponseEntity.ok("Successful buy");
-        }
-        @PostMapping("/check")
-        public ResponseEntity<String> checkAvailableTicket(@RequestParam UUID ticket){
-            if(userService.checkAvailableTicket(ticket)){
+    @PostMapping("/check")
+    public ResponseEntity<String> checkAvailableTicket(@RequestParam UUID ticket){
+        if(userService.checkAvailableTicket(ticket)){
             return ResponseEntity.ok("Билет проверен");
-            }
-            return ResponseEntity.badRequest().body("Билет не действителен или был использован.");
         }
-        //endregion
+        return ResponseEntity.badRequest().body("Билет не действителен или был использован.");
+    }
 
 }
 
