@@ -29,9 +29,19 @@ public class PaymentService {
         this.emailService = emailService;
     }
 
+    private ArrayList createTickets(ResponseTicket responseTicket) {
+        Map<String, Integer> tickets = responseTicket.getQuantityTickets();
+        ArrayList<AbstractTicket> resultTickets = new ArrayList<>();
+        for (Map.Entry<String, Integer> t : tickets.entrySet()) {
+            for (int i = 0; i < t.getValue(); i++) {
+                resultTickets.add(TicketFactory.createTicket(t.getKey()));
+            }
+        }
+        return resultTickets;
+    }
+
+
     public void quickPurchase(ResponseTicket responseTicket) {
-
-
 
 
         Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicket.getUser().getTelephone().toString());
@@ -48,11 +58,11 @@ public class PaymentService {
         } else {
 
             guestUser = new GuestUser();
-            Telephone telephone = new Telephone(user.getTelephone().getNumber());
+            Telephone telephone = new Telephone(responseTicket.getUser().getTelephone().getNumber());
             telephone.setUser(guestUser);
 
-            guestUser.setName(user.getName());
-            guestUser.setEmail(user.getEmail());
+            guestUser.setName(responseTicket.getUser().getName());
+            guestUser.setEmail(responseTicket.getUser().getEmail());
         }
 
         guestUser.getUserTickets().add(ticket);
