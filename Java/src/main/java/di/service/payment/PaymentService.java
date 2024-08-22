@@ -2,6 +2,7 @@ package di.service.payment;
 
 import di.emailsevice.service.EmailService;
 import di.model.dto.tickets.ResponseTicket;
+import di.model.dto.tickets.ResponseTicketOrder;
 import di.model.dto.tickets.TicketFactory;
 import di.model.entity.telephone.Telephone;
 import di.model.entity.ticket.AbstractTicket;
@@ -11,6 +12,7 @@ import di.model.entity.ticket.SeniorTicket;
 import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import di.repository.user.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,20 +31,22 @@ public class PaymentService {
         this.emailService = emailService;
     }
 
-    private ArrayList createTickets(ResponseTicket responseTicket) {
-        Map<String, Integer> tickets = responseTicket.getQuantityTickets();
+    private ArrayList<AbstractTicket> getTickets(Map<String, Integer> tickets) {
         ArrayList<AbstractTicket> resultTickets = new ArrayList<>();
-        for (Map.Entry<String, Integer> t : tickets.entrySet()) {
-            for (int i = 0; i < t.getValue(); i++) {
-                resultTickets.add(TicketFactory.createTicket(t.getKey()));
+        if (!tickets.isEmpty()) {
+            for (Map.Entry<String, Integer> t : tickets.entrySet()) {
+                for (int i = 0; i < t.getValue(); i++) {
+                    resultTickets.add(TicketFactory.createTicket(t.getKey()));
+                }
             }
         }
         return resultTickets;
     }
 
-
-    public void quickPurchase(ResponseTicket responseTicket) {
-
+    //todo дописать методы. после получения пользователя или создания нового надо сделать метод который бы по количеству и названию добавлял
+    // пользвателю нужные билеты. Проблема в том что старые билеты нужно тоже сохранить и не печатать.
+    public void quickPurchase(ResponseTicketOrder responseTicket) {
+        ArrayList<AbstractTicket> tickets = getTickets(responseTicket.getQuantityTickets());
 
         Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicket.getUser().getTelephone().toString());
         User guestUser;
@@ -50,11 +54,10 @@ public class PaymentService {
 
             guestUser = getUserOptional.get();
 
-            //TODO доделать обработку отсутвия имейла, либо сделать через смс.
             if (guestUser.getEmail().isEmpty()) {
                 throw new RuntimeException();
             }
-
+            return;
         } else {
 
             guestUser = new GuestUser();

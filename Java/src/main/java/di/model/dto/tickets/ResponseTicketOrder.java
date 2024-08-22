@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class ResponseTicket {
+public class ResponseTicketOrder {
     private User user;
     private Map<String, Integer> quantityTickets;
 }
