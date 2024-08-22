@@ -37,10 +37,12 @@ public class PaymentService {
         if (!tickets.isEmpty()) {
             for (Map.Entry<String, Integer> t : tickets.entrySet()) {
                 for (int i = 0; i < t.getValue(); i++) {
-                    user.getUserTickets().add(TicketFactory.createTicket(t.getKey()));
-
+                AbstractTicket ticket = TicketFactory.createTicket(t.getKey());
+                ticket.setUser(user);
+                user.getUserTickets().add(ticket);
                 }
             }
+            emailService.sendTicketToUser(user.getName(),);
         }
         return false;
     }
