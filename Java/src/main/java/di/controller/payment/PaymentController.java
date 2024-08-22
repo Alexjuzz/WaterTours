@@ -1,7 +1,5 @@
 package di.controller.payment;
-import di.model.dto.tickets.ResponseTicket;
 import di.model.dto.tickets.ResponseTicketOrder;
-import di.model.entity.user.User;
 import di.service.payment.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

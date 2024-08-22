@@ -1,5 +1,7 @@
 package di.service.payment;
 
+import di.controller.facadecontroller.FacadeController;
+import di.customexceptions.user.UserNotFoundException;
 import di.emailsevice.service.EmailService;
 import di.model.dto.tickets.ResponseTicket;
 import di.model.dto.tickets.ResponseTicketOrder;
@@ -31,52 +33,46 @@ public class PaymentService {
         this.emailService = emailService;
     }
 
-    private ArrayList<AbstractTicket> getTickets(Map<String, Integer> tickets) {
-        ArrayList<AbstractTicket> resultTickets = new ArrayList<>();
+    private boolean getTickets(User user, Map<String, Integer> tickets) {
         if (!tickets.isEmpty()) {
             for (Map.Entry<String, Integer> t : tickets.entrySet()) {
                 for (int i = 0; i < t.getValue(); i++) {
-                    resultTickets.add(TicketFactory.createTicket(t.getKey()));
+                    user.getUserTickets().add(TicketFactory.createTicket(t.getKey()));
+
                 }
             }
         }
-        return resultTickets;
+        return false;
     }
+
 
     //todo дописать методы. после получения пользователя или создания нового надо сделать метод который бы по количеству и названию добавлял
     // пользвателю нужные билеты. Проблема в том что старые билеты нужно тоже сохранить и не печатать.
-    public void quickPurchase(ResponseTicketOrder responseTicket) {
-        ArrayList<AbstractTicket> tickets = getTickets(responseTicket.getQuantityTickets());
+    public void quickPurchase(ResponseTicketOrder responseTicketOrder) {
 
-        Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicket.getUser().getTelephone().toString());
+        Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicketOrder.getUser().getTelephone().toString());
         User guestUser;
         if (getUserOptional.isPresent()) {
 
             guestUser = getUserOptional.get();
 
             if (guestUser.getEmail().isEmpty()) {
-                throw new RuntimeException();
+                throw new UserNotFoundException("Пользователь с данной почтой отсутвует.");
             }
+
+
             return;
         } else {
 
             guestUser = new GuestUser();
-            Telephone telephone = new Telephone(responseTicket.getUser().getTelephone().getNumber());
+            Telephone telephone = new Telephone(responseTicketOrder.getUser().getTelephone().getNumber());
             telephone.setUser(guestUser);
-
-            guestUser.setName(responseTicket.getUser().getName());
-            guestUser.setEmail(responseTicket.getUser().getEmail());
+            guestUser.setName(responseTicketOrder.getUser().getName());
+            guestUser.setEmail(responseTicketOrder.getUser().getEmail());
         }
 
-        guestUser.getUserTickets().add(ticket);
-        ticket.setUser(guestUser);
 
         userRepository.save(guestUser);
 
-        try {
-            emailService.sendTicketToUser(guestUser, ticket);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
