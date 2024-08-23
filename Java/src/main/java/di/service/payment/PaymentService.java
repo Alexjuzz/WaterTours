@@ -1,24 +1,17 @@
 package di.service.payment;
 
-import di.controller.facadecontroller.FacadeController;
 import di.customexceptions.user.UserNotFoundException;
 import di.emailsevice.service.EmailService;
-import di.model.dto.tickets.ResponseTicket;
+import di.model.dto.tickets.QuickTicketOrder;
 import di.model.dto.tickets.ResponseTicketOrder;
 import di.model.dto.tickets.TicketFactory;
 import di.model.entity.telephone.Telephone;
 import di.model.entity.ticket.AbstractTicket;
-import di.model.entity.ticket.AdultTicket;
-import di.model.entity.ticket.ChildTicket;
-import di.model.entity.ticket.SeniorTicket;
 import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import di.repository.user.UserRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,7 +26,8 @@ public class PaymentService {
         this.emailService = emailService;
     }
 
-    private boolean getTickets(User user, Map<String, Integer> tickets) {
+    private void sendTickets(User user, Map<String, Integer> tickets)  {
+
         if (!tickets.isEmpty()) {
             for (Map.Entry<String, Integer> t : tickets.entrySet()) {
                 for (int i = 0; i < t.getValue(); i++) {
@@ -42,15 +36,19 @@ public class PaymentService {
                 user.getUserTickets().add(ticket);
                 }
             }
-            emailService.sendTicketToUser(user.getName(),);
+            try {
+                emailService.sendTicketsToUser(user);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
         }
-        return false;
     }
 
 
-    //todo дописать методы. после получения пользователя или создания нового надо сделать метод который бы по количеству и названию добавлял
-    // пользвателю нужные билеты. Проблема в том что старые билеты нужно тоже сохранить и не печатать.
-    public void quickPurchase(ResponseTicketOrder responseTicketOrder) {
+    //todo Переписать метод для покупки билета под новый класс QUICKORDER с использованием нового наследника GuestUSer
+    // Отредактировать все JPA разделить их под разные типы Register, Guest, User подумать нужен ли User ?
+
+    public void quickPurchase(ResponseTicketOrder responseTicketOrder)  {
 
         Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicketOrder.getUser().getTelephone().toString());
         User guestUser;
@@ -62,19 +60,29 @@ public class PaymentService {
                 throw new UserNotFoundException("Пользователь с данной почтой отсутвует.");
             }
 
-
-            return;
         } else {
 
-            guestUser = new GuestUser();
+            guestUser = new User();
+
             Telephone telephone = new Telephone(responseTicketOrder.getUser().getTelephone().getNumber());
             telephone.setUser(guestUser);
+            guestUser.setTelephone(telephone);
             guestUser.setName(responseTicketOrder.getUser().getName());
             guestUser.setEmail(responseTicketOrder.getUser().getEmail());
+            guestUser.setRole(responseTicketOrder.getUser().getRole());
+            guestUser.setPassword(responseTicketOrder.getUser().getPassword());
         }
+
+        sendTickets(guestUser, responseTicketOrder.getQuantityTickets());
 
 
         userRepository.save(guestUser);
+
+    }
+    public void quickPurchase2(QuickTicketOrder quickTicketOrder){
+        GuestUser guestUser = new GuestUser();
+        guestUser.setEmail(quickTicketOrder.getGuestUser().getEmail());
+        guestUser.setUserTickets(quickTicketOrder.getGuestUser().getUserTickets());
 
     }
 }

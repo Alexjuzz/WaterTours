@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//TODO : Подумать о Security - На счет USERDETAILS .
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -35,9 +34,8 @@ public class User {
     private Telephone telephone;
     @Column(name = "email", nullable = false, length = 250)
     private String email;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-    @Column(name = "role", nullable = false)
-    private Role role;
+//    @Column(name = "password", nullable = true)
+//    private String password;
+//    @Column(name = "role", nullable = false)
+//    private Role role;
 }

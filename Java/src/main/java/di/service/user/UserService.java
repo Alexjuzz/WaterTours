@@ -4,13 +4,8 @@ import di.customexceptions.email.EmailAlreadyUsedException;
 import di.customexceptions.telephone.TelephoneAlreadyExistException;
 import di.customexceptions.user.UserEmptyResultDataException;
 import di.customexceptions.user.UserNotFoundException;
-import di.emailsevice.service.EmailService;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.ticket.AbstractTicket;
-import di.model.entity.ticket.AdultTicket;
-import di.model.entity.ticket.ChildTicket;
-import di.model.entity.ticket.SeniorTicket;
-import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import di.model.entity.telephone.Telephone;
 import di.repository.ticket.TicketRepository;
@@ -123,7 +118,7 @@ public class UserService {
 // endregion
 
     //region GUEST USER
-    public ResponseUser createGuestUser(GuestUser user) {
+    public ResponseUser createGuestUser(User user) {
         //TODO доделать validator
         Set<ConstraintViolation<Telephone>> validation = validator.validate(user.getTelephone());
         if (!validation.isEmpty()) {
@@ -134,16 +129,16 @@ public class UserService {
             throw new TelephoneAlreadyExistException("Telephone number already exist");
         }
 
-        GuestUser requestUser = new GuestUser();
+        User requestUser = new User();
         requestUser.setName(user.getName());
         requestUser.setEmail(user.getEmail());
 
         Telephone telephone = createAndLinkTelephone(user.getTelephone().getNumber(), requestUser);
         requestUser.setTelephone(telephone);
-        return convertGuestToResponseUser(repository.save(requestUser));
+        return convertUserToResponseUser(repository.save(requestUser));
     }
 
-    private ResponseUser convertGuestToResponseUser(GuestUser user) {
+    private ResponseUser convertGuestToResponseUser(User user) {
         ResponseUser response = new ResponseUser();
         response.setId(user.getId());
         response.setName(user.getName());

@@ -1,23 +1,17 @@
 package di.emailsevice.service;
 
-import com.itextpdf.layout.Document;
 import di.model.entity.ticket.AbstractTicket;
-import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import di.service.pdfManager.PDFCreator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 
 @Service
 public class EmailService {
@@ -48,5 +42,21 @@ public class EmailService {
 
     public void sendTicketToUser(User user, AbstractTicket ticket) throws Exception {
         sendTicketToUser(user.getEmail(), "test title", pdfCreator.createPdf(ticket));
+    }
+    public void sendTicketsToUser(User user) throws Exception {
+        String title = "Ticket : ";
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("juzzleee@yandex.ru");
+        helper.setTo(user.getEmail());
+        helper.setSubject(title);
+        helper.setText("Here is your ticket");
+        int counter = 1;
+        for (AbstractTicket tickets : user.getUserTickets()){
+            ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
+            helper.addAttachment("ticket "  +  + counter + ".pdf", pdfResource, "application/pdf");
+            counter++;
+        }
+        sender.send(message);
     }
 }

@@ -13,7 +13,7 @@ public class PaymentController implements iPaymentController{
     }
     @PostMapping
     @RequestMapping("/quick")
-        public ResponseEntity<String> quickPurchase(@RequestBody ResponseTicketOrder order){
+        public ResponseEntity<String> quickPurchase(@RequestBody ResponseTicketOrder order) throws Exception {
         paymentService.quickPurchase(order);
         return ResponseEntity.ok("Successful buy");
     }

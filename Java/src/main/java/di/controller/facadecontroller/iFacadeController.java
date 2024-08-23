@@ -5,7 +5,6 @@ import di.model.dto.boats.ResponseBoat;
 import di.model.dto.booking.ResponseBooking;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.seats.Seat;
-import di.model.entity.user.GuestUser;
 import di.model.entity.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.UUID;
 @RequestMapping("/api")
-public interface iFacadecontroller {
+ interface iFacadecontroller {
 
     //region USER API REGION
     ResponseEntity<List<ResponseUser>> getAllUsers();

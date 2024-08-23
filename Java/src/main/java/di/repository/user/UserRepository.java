@@ -1,7 +1,5 @@
 package di.repository.user;
 
-import di.model.entity.user.GuestUser;
-//import di.model.entity.user.RegularUser;
 import di.model.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

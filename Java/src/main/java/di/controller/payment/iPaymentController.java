@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/purchase")
 public interface iPaymentController {
 
-    ResponseEntity<String> quickPurchase(@RequestBody ResponseTicketOrder order);
+    ResponseEntity<String> quickPurchase(@RequestBody ResponseTicketOrder order) throws Exception;
 }
