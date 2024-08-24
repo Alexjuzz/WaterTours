@@ -10,6 +10,8 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO Рассмотреть возможность хранения данных по разным таблицам USER/REGISTERED/GUESTUSER  - "TABLE_PER_CLASS".
+
 
 @Entity
 @Data
