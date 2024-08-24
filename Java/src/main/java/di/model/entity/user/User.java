@@ -34,8 +34,5 @@ public class User {
     private Telephone telephone;
     @Column(name = "email", nullable = false, length = 250)
     private String email;
-//    @Column(name = "password", nullable = true)
-//    private String password;
-//    @Column(name = "role", nullable = false)
-//    private Role role;
+
 }

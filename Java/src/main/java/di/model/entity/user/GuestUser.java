@@ -7,6 +7,6 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("guest_users")
-public class GuestUser extends  User{
+public class GuestUser extends User {
 
 }

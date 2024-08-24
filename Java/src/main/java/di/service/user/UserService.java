@@ -6,6 +6,7 @@ import di.customexceptions.user.UserEmptyResultDataException;
 import di.customexceptions.user.UserNotFoundException;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.ticket.AbstractTicket;
+import di.model.entity.user.RegisterUser;
 import di.model.entity.user.User;
 import di.model.entity.telephone.Telephone;
 import di.repository.ticket.TicketRepository;
@@ -49,7 +50,7 @@ public class UserService {
         if (telephoneRepository.existsByNumber(user.getTelephone().getNumber())) {
             throw new TelephoneAlreadyExistException("Telephone number already exist");
         }
-        User requestUser = new User();
+        RegisterUser requestUser = new RegisterUser();
         requestUser.setName(user.getName());
         requestUser.setEmail(user.getEmail());
         requestUser.setPassword(user.getPassword());
@@ -73,7 +74,7 @@ public class UserService {
     }
 
     public ResponseUser getUserByPhone(String number) {
-        Optional<User> getUser = repository.getUserByTelephone(number);
+        Optional<RegisterUser> getUser = repository.getRegistryUserByPhone((number));
         if (getUser.isEmpty()) {
             throw new UserNotFoundException(String.format("Пользователь с номером %s не найден", number));
         }
@@ -83,12 +84,17 @@ public class UserService {
 
     private ResponseUser convertUserToResponseUser(User user) {
         ResponseUser response = new ResponseUser();
+
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
-        response.setPassword(user.getPassword());
         response.setTelephone(user.getTelephone());
-        response.setRole(user.getRole());
+
+
+        if(user instanceof RegisterUser registerUser) {
+            response.setRole(registerUser.getRole());
+            response.setPassword(registerUser.getPassword());
+        }
 
         return response;
     }
@@ -179,7 +185,6 @@ public class UserService {
             throw new UserNotFoundException(String.format("Пользователь с почтой %s не найден", user.getEmail()));
         }
         User updateUser = getUser.get();
-        updateUser.setRole(user.getRole());
         updateUser.setName(user.getName());
         updateUser.setTelephone(createAndLinkTelephone(user.getTelephone().getNumber(), updateUser));
         repository.save(updateUser);

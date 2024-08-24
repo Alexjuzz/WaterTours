@@ -50,8 +50,8 @@ public class PaymentService {
 
     public void quickPurchase(ResponseTicketOrder responseTicketOrder)  {
 
-        Optional<User> getUserOptional = userRepository.getUserByTelephone(responseTicketOrder.getUser().getTelephone().toString());
-        User guestUser;
+        Optional<GuestUser> getUserOptional = userRepository.getGuestUserByEmail(responseTicketOrder.getUser().getEmail());
+        GuestUser guestUser;
         if (getUserOptional.isPresent()) {
 
             guestUser = getUserOptional.get();
@@ -62,15 +62,13 @@ public class PaymentService {
 
         } else {
 
-            guestUser = new User();
+            guestUser = new GuestUser();
 
             Telephone telephone = new Telephone(responseTicketOrder.getUser().getTelephone().getNumber());
             telephone.setUser(guestUser);
             guestUser.setTelephone(telephone);
             guestUser.setName(responseTicketOrder.getUser().getName());
             guestUser.setEmail(responseTicketOrder.getUser().getEmail());
-            guestUser.setRole(responseTicketOrder.getUser().getRole());
-            guestUser.setPassword(responseTicketOrder.getUser().getPassword());
         }
 
         sendTickets(guestUser, responseTicketOrder.getQuantityTickets());
