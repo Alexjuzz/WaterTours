@@ -1,7 +1,7 @@
 package di.service.payment;
 
 import di.customexceptions.user.UserNotFoundException;
-import di.emailsevice.service.EmailService;
+import di.service.emailsevice.service.EmailService;
 import di.model.dto.tickets.QuickTicketOrder;
 import di.model.dto.tickets.ResponseTicketOrder;
 import di.model.dto.tickets.TicketFactory;

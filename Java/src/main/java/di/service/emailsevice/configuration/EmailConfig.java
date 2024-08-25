@@ -1,4 +1,4 @@
-package di.emailsevice.configuration;
+package di.service.emailsevice.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

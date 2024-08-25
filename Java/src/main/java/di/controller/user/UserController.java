@@ -1,6 +1,6 @@
 package di.controller.user;
 
-import di.emailsevice.service.EmailService;
+import di.service.emailsevice.service.EmailService;
 import di.model.dto.user.ResponseUser;
 import di.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

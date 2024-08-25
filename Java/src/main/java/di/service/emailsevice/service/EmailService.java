@@ -1,4 +1,4 @@
-package di.emailsevice.service;
+package di.service.emailsevice.service;
 
 import di.model.entity.ticket.AbstractTicket;
 import di.model.entity.user.User;
