@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,7 +94,6 @@ public class JwtService {
      * @return токен
      */
 
-    //TODO проверить что можно использовать для signWith
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
         return Jwts.builder().claims()
                 .add(extraClaims)
@@ -100,8 +101,39 @@ public class JwtService {
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000  * 60 + 24))
                 .and()
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey())
                 .compact();
+    }
+
+    /**
+     * Проверка токена на просроченность
+     *
+     * @param token токен
+     * @return true, если токен просрочен
+     */
+
+    private boolean isTokenExpired(String token){
+        return extractExpiration(token).before(new Date());
+    }
+    /**
+     * Извлечение даты истечения токена
+     *
+     * @param token токен
+     * @return дата истечения
+     */
+    private Date exTractExpiration(String token){
+        return extractClaim(token,Claims::getExpiration);
+    }
+    /**
+     * Извлечение всех данных из токена
+     *
+     * @param token токен
+     * @return данные
+     */
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
+                .getBody();
     }
 
 }
