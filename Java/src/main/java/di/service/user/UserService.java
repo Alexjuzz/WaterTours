@@ -4,6 +4,7 @@ import di.customexceptions.email.EmailAlreadyUsedException;
 import di.customexceptions.telephone.TelephoneAlreadyExistException;
 import di.customexceptions.user.UserEmptyResultDataException;
 import di.customexceptions.user.UserNotFoundException;
+import di.enums.Role;
 import di.model.dto.user.ResponseUser;
 import di.model.entity.ticket.AbstractTicket;
 import di.model.entity.user.RegisterUser;
@@ -213,6 +214,11 @@ public class UserService {
 
     }
 
+    public RegisterUser getRegisterUser(String name){
+        return  repository.findByNameRegisterUser(name)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    }
+
     /**
      * Получение пользователя по имени пользователя
      * <p>
@@ -221,12 +227,19 @@ public class UserService {
      * @return пользователь
      */
     public UserDetailsService userDetailsService() {
-        return this::getByUsername;
+        return this::getRegisterUser;
     }
-    public User getCurrentUser() {
+    public RegisterUser getCurrentUser() {
         // Получение имени пользователя из контекста Spring Security
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
+        return getRegisterUser(username);
+    }
+
+    @Deprecated
+    public void getAdmin() {
+        var user = getCurrentUser();
+        user.setRole(Role.ROLE_ADMIN);
+        repository.save(user);
     }
 
 }

@@ -24,3 +24,36 @@
 //        return http.build();
 //    }
 //}
+
+
+//TODO 29.08 - тест JWT
+
+import di.model.entity.user.User;
+import di.security.jwt.JwtAuthenticationFilter;
+import di.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfig {
+
+    private final JwtAuthenticationFilter authenticationFilter;
+    private final UserService userService;
+
+    @Autowired
+    public SecurityConfig(JwtAuthenticationFilter authenticationFilter, UserService userService) {
+        this.authenticationFilter = authenticationFilter;
+        this.userService = userService;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+}

@@ -4,7 +4,6 @@ import di.enums.Role;
 import di.model.dto.sign.SignInRequest;
 import di.model.dto.sign.SignUpRequest;
 import di.model.entity.user.RegisterUser;
-import di.security.jwt.JwtAuthenticationToken;
 import di.security.jwt.JwtService;
 import di.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class authenticationService {
+public class AuthenticationService {
     private final UserService userService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public authenticationService(UserService userService, JwtService jwtService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthenticationService(UserService userService, JwtService jwtService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
