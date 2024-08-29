@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.UUID;
 @RequestMapping("/api")
- interface iFacadecontroller {
+ interface iFacadeController {
 
     //region USER API REGION
     ResponseEntity<List<ResponseUser>> getAllUsers();

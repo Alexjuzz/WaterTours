@@ -1,7 +1,6 @@
 package di.model.entity.telephone;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import di.model.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import javax.validation.constraints.Pattern;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Telephone {
 
     @Id
@@ -48,6 +46,5 @@ public class Telephone {
     @JsonBackReference
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
-
 
 }

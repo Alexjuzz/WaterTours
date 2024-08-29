@@ -16,6 +16,9 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +58,7 @@ public class UserService {
         requestUser.setEmail(user.getEmail());
         requestUser.setPassword(user.getPassword());
         requestUser.setRole(user.getRole());
-        Telephone telephone = createAndLinkTelephone(user.getTelephone().getNumber(), requestUser);
+        Telephone telephone = addTelephoneToUser(user.getTelephone().getNumber(), requestUser);
         requestUser.setTelephone(telephone);
 
         return convertUserToResponseUser(repository.save(requestUser));
@@ -139,7 +142,7 @@ public class UserService {
         requestUser.setName(user.getName());
         requestUser.setEmail(user.getEmail());
 
-        Telephone telephone = createAndLinkTelephone(user.getTelephone().getNumber(), requestUser);
+        Telephone telephone = addTelephoneToUser(user.getTelephone().getNumber(), requestUser);
         requestUser.setTelephone(telephone);
         return convertUserToResponseUser(repository.save(requestUser));
     }
@@ -156,7 +159,7 @@ public class UserService {
 
 
     //region Add telephone to user
-    private Telephone createAndLinkTelephone(String number, User user) {
+    private Telephone addTelephoneToUser(String number, User user) {
         Telephone telephone = new Telephone(number);
         telephone.setUser(user);
         return telephone;
@@ -186,7 +189,7 @@ public class UserService {
         }
         User updateUser = getUser.get();
         updateUser.setName(user.getName());
-        updateUser.setTelephone(createAndLinkTelephone(user.getTelephone().getNumber(), updateUser));
+        updateUser.setTelephone(addTelephoneToUser(user.getTelephone().getNumber(), updateUser));
         repository.save(updateUser);
         return convertUserToResponseUser(updateUser);
     }
@@ -200,5 +203,30 @@ public class UserService {
             return "Пользователь успешно удален.";
     }
 
+
     //endregion
+
+    ///////
+    public User getByUsername(String username) {
+        return repository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+
+    }
+
+    /**
+     * Получение пользователя по имени пользователя
+     * <p>
+     * Нужен для Spring Security
+     *
+     * @return пользователь
+     */
+    public UserDetailsService userDetailsService() {
+        return this::getByUsername;
+    }
+    public User getCurrentUser() {
+        // Получение имени пользователя из контекста Spring Security
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getByUsername(username);
+    }
+
 }

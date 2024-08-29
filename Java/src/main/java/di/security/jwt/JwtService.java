@@ -3,15 +3,12 @@ package di.security.jwt;
 import di.model.entity.user.RegisterUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,15 +20,7 @@ public class JwtService {
         @Value("${token.sign.key}")
     private String jwtSignKey;
 
-    /**
-     * Получение ключа для подписи токена
-     *
-     * @return ключ
-     */
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSignKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+
 
     /**
      * Извлечение имени пользователя из токена
@@ -41,7 +30,7 @@ public class JwtService {
      */
 
     public String extractUserName(String token){
-        return extractClaims(token, Claims::getSubject)
+        return extractClaim(token, Claims::getSubject);
     }
 
     /**
@@ -69,7 +58,7 @@ public class JwtService {
      */
     public boolean isValidToken(String token, UserDetails userDetails){
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isValidExpired(token);
+        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     /**
@@ -81,7 +70,7 @@ public class JwtService {
      * @return данные
      */
 
-    private <T>  T extractClaims(String token, Function<Claims, T> claimsResolvers){
+    private <T>  T extractClaim(String token, Function<Claims, T> claimsResolvers){
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
@@ -121,7 +110,7 @@ public class JwtService {
      * @param token токен
      * @return дата истечения
      */
-    private Date exTractExpiration(String token){
+    private Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
     }
     /**
@@ -135,5 +124,16 @@ public class JwtService {
         return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
                 .getBody();
     }
+    /**
+     * Получение ключа для подписи токена
+     *
+     * @return ключ
+     */
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSignKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+
 
 }

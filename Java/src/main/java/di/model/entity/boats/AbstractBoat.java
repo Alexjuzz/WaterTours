@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import di.enums.TripType;
 import di.model.entity.seats.Seat;
 import di.model.entity.trips.Trip;
-import di.model.interfaces.InterfaceShip;
-import di.model.interfaces.InterfaceTrip;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "boat_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "boat")
-public class AbstractBoat implements InterfaceShip {
+public class AbstractBoat  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

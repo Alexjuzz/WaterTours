@@ -19,11 +19,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-public class FacadeController implements iFacadecontroller {
+public class FacadeController implements iFacadeController {
     private final BookingService bookingService;
     private final UserService userService;
     private final BoatService boatService;
-    private final PaymentController paymentController;
 
     @Autowired
 
@@ -31,7 +30,6 @@ public class FacadeController implements iFacadecontroller {
         this.bookingService = bookingService;
         this.userService = userService;
         this.boatService = boatService;
-        this.paymentController = paymentController;
     }
 
     //region USER API REGION

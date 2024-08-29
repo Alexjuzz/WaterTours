@@ -30,7 +30,7 @@ public class BoatService {
 
     }
 
-    public ResponseBoat createBoatByNameAndCapacity(Boat boat) { // Создание корабля.
+    public ResponseBoat createBoat(Boat boat) { // Создание корабля.
         AbstractBoat newBoat =  new Boat();
         newBoat.setName(boat.getName());
         newBoat.setTrip(boat.getTrip());

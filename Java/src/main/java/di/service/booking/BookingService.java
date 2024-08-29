@@ -54,7 +54,7 @@ public class BookingService {
      * @param bookingTime - Enum - в котором записаны итенрвалы для записи каждые 3 часа.
      * @return - возращает обьект ответа для фронта.
      */
-    @Transactional
+
     public ResponseBooking setBookingToPlace(Long seatId, BookingTime bookingTime, String number) {
 
         Telephone telephone = telephoneRepository.getTelephoneByNumber(number).
@@ -76,7 +76,7 @@ public class BookingService {
         return convetBookingToResponseBooking(bookingRepository.save(booking));
     }
 
-    @Transactional
+
     public boolean cancelReservation(Long seatId, BookingTime bookingTime, String phoneNumber) {
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
@@ -108,7 +108,6 @@ public class BookingService {
      * @param newTime - новое время
      * @return - Возвращает обьект для ответа на front
      */
-    @Transactional
     //TODO : Посмотреть как правильно обработать oldTime если его нету.
     public ResponseBooking changeReservedBookingTime(Long seatId, BookingTime oldTime, BookingTime newTime) {
         Seat seat = seatRepository.findById(seatId).orElseThrow(() -> new SeatNotFoundException("Seat not found With ID : " + seatId));
