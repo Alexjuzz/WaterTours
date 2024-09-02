@@ -6,6 +6,7 @@ import di.model.dto.sign.SignUpRequest;
 import di.model.entity.user.RegisterUser;
 import di.security.jwt.JwtService;
 import di.service.user.UserService;
+import di.security.jwt.JwtAuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,9 +41,9 @@ public class AuthenticationService {
         user.setEmail(request.getEmail());
         user.setRole(Role.ROLE_USER);
 
-        userService.createUser(null);
+        userService.create(user);
         var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse(jwt);
+        return new JwtAuthenticationResponse(jwt);
     }
     /**
      * Аутентификация пользователя

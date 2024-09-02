@@ -78,7 +78,7 @@ public class UserService {
     }
 
     public ResponseUser getUserByPhone(String number) {
-        Optional<RegisterUser> getUser = repository.getRegistryUserByPhone((number));
+        Optional<RegisterUser> getUser = repository.getRegisterUserByPhone((number));
         if (getUser.isEmpty()) {
             throw new UserNotFoundException(String.format("Пользователь с номером %s не найден", number));
         }
@@ -208,14 +208,19 @@ public class UserService {
     //endregion
 
     ///////
-    public User getByUsername(String username) {
-        return repository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    public User create(User user) {
 
+        return repository.save(user);
     }
 
+//    public User getByUsername(String username) {
+//        return repository.findByName(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+//
+//    }
+
     public RegisterUser getRegisterUser(String name){
-        return  repository.findByNameRegisterUser(name)
+        return  repository.findByName(name)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 

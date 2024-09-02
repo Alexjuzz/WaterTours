@@ -12,30 +12,24 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     // User
-    @Query("SELECT u FROM  User u WHERE u.telephone.number = :number")
+    @Query("SELECT u FROM User u WHERE u.telephone.number = :number")
     Optional<User> getByTelephone(@Param("number") String telephone);
 
-    @Query("SELECT u FROM  User u WHERE u.name = :name")
-    Optional<User> findByUserName(@Param("name") String name);
+//    Optional<User> findByUserName(@Param("name") String name);
 
-    @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> getUserByEmail(@Param("email") String email);
 
-    @Query("SELECT u FROM  User u WHERE u.telephone.number = :number")
-    Optional<User> getUserByTelephone(@Param("number") String telephone);
+    boolean existsByName(String name);
 
-    boolean existsByUserName(String userName);
-
-    boolean existByEmail(String email);
+    boolean existsByEmail(String email);
 
     // Guest User
-    @Query("SELECT u FROM GuestUser  u WHERE u.email = :email")
+    @Query("SELECT u FROM GuestUser u WHERE u.email = :email")
     Optional<GuestUser> getGuestUserByEmail(@Param("email") String email);
 
-
-    //RegisterUser
+    // RegisterUser
     @Query("SELECT u FROM RegisterUser u WHERE u.telephone.number = :number")
-    Optional<RegisterUser> getRegistryUserByPhone(@Param("number") String number);
+    Optional<RegisterUser> getRegisterUserByPhone(@Param("number") String number);
 
-    Optional<RegisterUser> findByNameRegisterUser(String name);
+    Optional<RegisterUser> findByName(@Param("name") String name);
 }

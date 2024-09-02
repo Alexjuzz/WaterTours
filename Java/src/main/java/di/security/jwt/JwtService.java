@@ -119,7 +119,7 @@ public class JwtService {
      * @param token токен
      * @return данные
      */
-
+    @Deprecated
     private Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
                 .getBody();
