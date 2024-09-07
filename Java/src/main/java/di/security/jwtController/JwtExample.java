@@ -19,7 +19,7 @@ public class JwtExample {
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public String exampleAdm(){
         return "Hello admin";
     }

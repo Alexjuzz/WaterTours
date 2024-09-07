@@ -31,5 +31,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM RegisterUser u WHERE u.telephone.number = :number")
     Optional<RegisterUser> getRegisterUserByPhone(@Param("number") String number);
 
-    Optional<RegisterUser> findByName(@Param("name") String name);
+    Optional<RegisterUser> findByEmail(@Param("email") String name);
 }

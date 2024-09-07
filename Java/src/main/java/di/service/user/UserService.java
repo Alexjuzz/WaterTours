@@ -219,8 +219,8 @@ public class UserService {
 //
 //    }
 
-    public RegisterUser getRegisterUser(String name){
-        return  repository.findByName(name)
+    public RegisterUser getRegisterUser(String email){
+        return  repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 

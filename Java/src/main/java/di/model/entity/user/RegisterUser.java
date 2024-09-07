@@ -28,7 +28,7 @@ public class RegisterUser extends User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return super.getName();
+        return super.getEmail();
     }
 
     @Override

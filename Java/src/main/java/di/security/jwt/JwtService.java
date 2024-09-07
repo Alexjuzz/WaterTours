@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
         @Value("${token.sign.key}")
-    private String jwtSignKey;
+        private String jwtSignKey;
 
 
 
@@ -29,7 +29,7 @@ public class JwtService {
      * @return имя пользователя
      */
 
-    public String extractUserName(String token){
+    public String extractUserEmail(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -44,6 +44,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         if(userDetails instanceof  RegisterUser customUserDetails){
             claims.put("id", customUserDetails.getId());
+            claims.put("name", customUserDetails.getName());
             claims.put("email", customUserDetails.getEmail());
             claims.put("role", customUserDetails.getRole());
         }
@@ -57,8 +58,8 @@ public class JwtService {
      * @return true, если токен валиден
      */
     public boolean isValidToken(String token, UserDetails userDetails){
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        final String userEmail = extractUserEmail(token);
+        return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     /**

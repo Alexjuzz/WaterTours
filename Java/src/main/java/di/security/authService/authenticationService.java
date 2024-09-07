@@ -32,8 +32,8 @@ public class AuthenticationService {
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
         var user = new RegisterUser();
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setName(request.getUserName());
         user.setEmail(request.getEmail());
+        user.setName(request.getName());
         user.setRole(Role.ROLE_USER);
 
         userService.create(user);
@@ -47,11 +47,10 @@ public class AuthenticationService {
      * @return токен
      */
     public JwtAuthenticationResponse signIn(SignInRequest request){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUserName(),
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),
                 request.getPassword()));
 
-        var user = userService.userDetailsService().loadUserByUsername(request.getUserName());
+        var user = userService.userDetailsService().loadUserByUsername(request.getEmail());
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);

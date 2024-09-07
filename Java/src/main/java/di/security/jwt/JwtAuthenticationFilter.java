@@ -50,15 +50,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+            // Пропускаем запрос, если заголовок отсутствует или не начинается с "Bearer "
+            filterChain.doFilter(request, response);
+            return;
+        }
         // Обрезаем префикс и получаем имя пользователя из токена
         var jwt = authHeader.substring(BEARER_PREFIX.length());
-        var username = jwtService.extractUserName(jwt);
+        var userEmail = jwtService.extractUserEmail(jwt);
 
-        if (!StringUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService
                     .userDetailsService()
-                    .loadUserByUsername(username);
+                    .loadUserByUsername(userEmail);
 
             // Если токен валиден, то аутентифицируем пользователя
             if (jwtService.isValidToken(jwt, userDetails)) {

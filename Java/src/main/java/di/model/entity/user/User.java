@@ -10,7 +10,11 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO Рассмотреть возможность хранения данных по разным таблицам USER/REGISTERED/GUESTUSER  - "TABLE_PER_CLASS".
+//TODO Рассмотреть возможность хранения данных по разным таблицам USER/REGISTERED/GUESTUSER  - "TABLE_PER_CLASS"
+// Обработать нормальную регистрацию, переделать JPA!
+// создать таблицу для хранения почты + уникальный UUID, либо сделать номер телефона + UUID (Возможно написать методы для удаления с
+// базы данных отработанных билетов, также добавить удаление старых билетов.
+// Настроить requestMatchers - endpoint-ы, да адекватного доступа.
 
 
 @Entity
