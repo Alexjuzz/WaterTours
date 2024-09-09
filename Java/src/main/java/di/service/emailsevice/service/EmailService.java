@@ -12,6 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class EmailService {
@@ -53,6 +55,23 @@ public class EmailService {
         helper.setText("Here is your ticket");
         int counter = 1;
         for (AbstractTicket tickets : user.getUserTickets()){
+            ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
+            helper.addAttachment("ticket "  +  + counter + ".pdf", pdfResource, "application/pdf");
+            counter++;
+        }
+        sender.send(message);
+    }
+
+    public void sendTicketByEmail(String email, List<AbstractTicket> ticketList) throws Exception {
+        String title = "Ticket : ";
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("juzzleee@yandex.ru");
+        helper.setTo(email);
+        helper.setSubject(title);
+        helper.setText("Here is your ticket");
+        int counter = 1;
+        for (AbstractTicket tickets : ticketList){
             ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
             helper.addAttachment("ticket "  +  + counter + ".pdf", pdfResource, "application/pdf");
             counter++;

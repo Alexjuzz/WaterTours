@@ -1,6 +1,7 @@
 package di.model.entity.ticket;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import di.model.entity.quickPurchase.QuickPurchase;
 import di.model.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ticket_type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "guest_ticket")
+@Table(name = "tickets")
 @RequiredArgsConstructor
 public abstract class AbstractTicket {
     @Id
@@ -31,9 +32,14 @@ public abstract class AbstractTicket {
     private UUID uniqueTicketId = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userId", nullable = true)
     @JsonBackReference
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "quick_purchase_id")
+    private QuickPurchase quickPurchase;
+
 
     @PrePersist
     //TODO Убрать публичность и сделать наследование protected.

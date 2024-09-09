@@ -3,7 +3,6 @@ package di.repository.user;
 import di.model.entity.user.GuestUser;
 import di.model.entity.user.RegisterUser;
 import di.model.entity.user.User;
-import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -7,6 +7,6 @@ import java.util.Map;
 
 @Data
 public class QuickTicketOrder{
-    private GuestUser guestUser;
+    private String email;
     private Map<String, Integer> quantityTickets;
 }

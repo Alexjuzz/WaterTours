@@ -15,6 +15,10 @@ import java.util.List;
 // создать таблицу для хранения почты + уникальный UUID, либо сделать номер телефона + UUID (Возможно написать методы для удаления с
 // базы данных отработанных билетов, также добавить удаление старых билетов.
 // Настроить requestMatchers - endpoint-ы, да адекватного доступа.
+// Подумать о поле логин и имя. - возможно нужно убрать имя в методах формирования писем, а использовать только почту.
+// Подумать о странице пользователя с данными ... - явно не скоро.
+// По возможности перейти к написанию тестов.
+// Возможно убрать класс USER  - сделать абстрактным.
 
 
 @Entity
@@ -22,7 +26,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
-public class User {
+public  class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
