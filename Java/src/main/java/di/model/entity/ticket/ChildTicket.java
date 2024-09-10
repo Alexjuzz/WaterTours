@@ -7,6 +7,10 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue("Child")
 public class ChildTicket extends AbstractTicket{
+
+
+
+
     {
         setPrice(900);
     }

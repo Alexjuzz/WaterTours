@@ -1,29 +1,31 @@
-package di.model.entity.ticket;
+package di.model.entity.quickTicket;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import di.model.entity.user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
 
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
+@Table(name  = "quickTickets")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ticket_type", discriminatorType = DiscriminatorType.STRING)
-@Table(name = "tickets")
-@RequiredArgsConstructor
-public abstract class AbstractTicket {
+public abstract  class QuickTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
     private double price = 1500;
+
     @Column
     private boolean valid = true;
+
     @Column
     private double discount = 0;
+
     @Column(updatable = false)
     private String dateStamp;
     @Getter
@@ -31,25 +33,21 @@ public abstract class AbstractTicket {
     private UUID uniqueTicketId = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    @JsonBackReference
-    private User user;
-
+    @JoinColumn(name = "quick_purchase_id")
+    private QuickPurchase quickPurchase;  // Связь с быстрой покупкой
 
     @PrePersist
-    //TODO Убрать публичность и сделать наследование protected.
     public void onCreate() {
         dateStamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(new java.util.Date());
         if (this.uniqueTicketId == null) {
             this.uniqueTicketId = UUID.randomUUID();
         }
     }
-
-   public boolean changeAvailableTicket(){
+    public boolean changeAvailableTicket(){
         if(isValid()){
             valid = false;
             return true;
         }
         return false;
-   }
+    }
 }

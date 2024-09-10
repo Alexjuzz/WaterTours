@@ -1,6 +1,6 @@
 package di.service.payment;
 
-import di.model.entity.quickPurchase.QuickPurchase;
+import di.model.entity.quickTicket.QuickTicket;
 import di.repository.quickPurchase.QuickPurchaseRepository;
 import di.service.emailsevice.service.EmailService;
 import di.model.dto.tickets.QuickTicketOrder;
@@ -8,7 +8,6 @@ import di.model.dto.tickets.TicketFactory;
 import di.model.entity.ticket.AbstractTicket;
 import di.model.entity.user.User;
 import di.repository.user.UserRepository;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +30,12 @@ public class PaymentService {
 
 
     public void quickPurchase(QuickTicketOrder responseTicketOrder) {
-        List<AbstractTicket> tickets = new ArrayList<>();
+        List<QuickTicket> tickets = new ArrayList<>();
 
-        QuickPurchase quickPurchase = new QuickPurchase();
-        quickPurchase.setEmail(responseTicketOrder.getEmail());
 
         for (Map.Entry<String, Integer> ticketList : responseTicketOrder.getQuantityTickets().entrySet()) {
-            AbstractTicket ticket = TicketFactory.createTicket(ticketList.getKey());
-            tickets.add(ticket);
+            QuickTicket quickTicket = TicketFactory.createQuickTicket(ticketList.getKey());
+            tickets.add(quickTicket);
         }
         try {
             emailService.sendTicketByEmail(responseTicketOrder.getEmail(), tickets);
@@ -46,8 +43,6 @@ public class PaymentService {
             throw new RuntimeException("Ошибка при отправке email: " + e.getMessage());
         }
         try {
-            quickPurchase.setAbstractTicketList(tickets);
-            quickPurchaseRepository.save(quickPurchase);
         } catch (Exception e) {
             throw new RuntimeException("Ошибка при сохранении покупки: " + e.getMessage());
         }

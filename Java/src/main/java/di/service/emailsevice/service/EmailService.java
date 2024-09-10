@@ -1,5 +1,6 @@
 package di.service.emailsevice.service;
 
+import di.model.entity.quickTicket.QuickTicket;
 import di.model.entity.ticket.AbstractTicket;
 import di.model.entity.user.User;
 import di.service.pdfManager.PDFCreator;
@@ -21,6 +22,7 @@ public class EmailService {
     private JavaMailSender sender;
     @Autowired
     private PDFCreator pdfCreator;
+
     public void sendSimpleMessage(String to, String title, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("juzzleee@yandex.ru");
@@ -45,6 +47,7 @@ public class EmailService {
     public void sendTicketToUser(User user, AbstractTicket ticket) throws Exception {
         sendTicketToUser(user.getEmail(), "test title", pdfCreator.createPdf(ticket));
     }
+
     public void sendTicketsToUser(User user) throws Exception {
         String title = "Ticket : ";
         MimeMessage message = sender.createMimeMessage();
@@ -54,15 +57,15 @@ public class EmailService {
         helper.setSubject(title);
         helper.setText("Here is your ticket");
         int counter = 1;
-        for (AbstractTicket tickets : user.getUserTickets()){
+        for (AbstractTicket tickets : user.getUserTickets()) {
             ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
-            helper.addAttachment("ticket "  +  + counter + ".pdf", pdfResource, "application/pdf");
+            helper.addAttachment("ticket " + +counter + ".pdf", pdfResource, "application/pdf");
             counter++;
         }
         sender.send(message);
     }
 
-    public void sendTicketByEmail(String email, List<AbstractTicket> ticketList) throws Exception {
+    public void sendTicketByEmail(String email, List<QuickTicket> ticketList) throws Exception {
         String title = "Ticket : ";
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -71,9 +74,9 @@ public class EmailService {
         helper.setSubject(title);
         helper.setText("Here is your ticket");
         int counter = 1;
-        for (AbstractTicket tickets : ticketList){
-            ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
-            helper.addAttachment("ticket "  +  + counter + ".pdf", pdfResource, "application/pdf");
+        for (QuickTicket tickets : ticketList) {
+            ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createQuickPdf(email, tickets));
+            helper.addAttachment("ticket " + +counter + ".pdf", pdfResource, "application/pdf");
             counter++;
         }
         sender.send(message);
