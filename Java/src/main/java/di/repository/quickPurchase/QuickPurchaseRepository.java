@@ -1,13 +1,8 @@
 package di.repository.quickPurchase;
 
-
-import di.model.entity.quickTicket.QuickTicket;
+import di.model.entity.quickTicket.QuickPurchase;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+public interface QuickPurchaseRepository extends JpaRepository<QuickPurchase, Long> {
 
-@Repository
-public interface QuickPurchaseRepository extends JpaRepository<QuickTicket, Long> {
-    Optional<QuickTicket> findByEmail(String email);
 }
