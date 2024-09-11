@@ -21,8 +21,8 @@ import java.io.IOException;
 @Component
 public class PDFCreator {
 
-    public byte[]  createPdf(AbstractTicket ticket) throws Exception {
-        ByteArrayOutputStream  response = new ByteArrayOutputStream();
+    public byte[] createPdf(AbstractTicket ticket) throws Exception {
+        ByteArrayOutputStream response = new ByteArrayOutputStream();
 
         PdfWriter writer = new PdfWriter(response);
 
@@ -37,16 +37,14 @@ public class PDFCreator {
         document.add(header);
 
 
-
-
         byte[] qrCode = GeneratorQR.generateQRCodeImage(ticket.getUniqueTicketId().toString());
         ImageData imageData = ImageDataFactory.create(qrCode);
         Image qrImage = new Image(imageData);
         qrImage.setWidth(250);
         qrImage.setHeight(250);
         qrImage.setFixedPosition(
-                (pdf.getDefaultPageSize().getWidth() - qrImage.getImageScaledWidth() - 75) ,
-                pdf.getDefaultPageSize().getTop()- 330);
+                (pdf.getDefaultPageSize().getWidth() - qrImage.getImageScaledWidth() - 75),
+                pdf.getDefaultPageSize().getTop() - 330);
 
         document.add(qrImage);
         Table table = new Table(new float[]{1, 2});
@@ -60,14 +58,14 @@ public class PDFCreator {
         table.addCell(ticket.getDateStamp());
         table.addCell("Price");
         table.addCell(String.valueOf(ticket.getPrice()));
-        table.setFixedPosition(36,300 , pdf.getDefaultPageSize().getWidth() - 72);
+        table.setFixedPosition(36, 300, pdf.getDefaultPageSize().getWidth() - 72);
         document.add(table);
         document.close();
         return response.toByteArray();
     }
 
     public byte[] createQuickPdf(String email, QuickTicket tickets) throws IOException, WriterException {
-        ByteArrayOutputStream  response = new ByteArrayOutputStream();
+        ByteArrayOutputStream response = new ByteArrayOutputStream();
 
         PdfWriter writer = new PdfWriter(response);
 
@@ -81,19 +79,16 @@ public class PDFCreator {
                 .setFontSize(35);
         document.add(header);
 
-
-
-
         byte[] qrCode = GeneratorQR.generateQRCodeImage(tickets.getUniqueTicketId().toString());
         ImageData imageData = ImageDataFactory.create(qrCode);
         Image qrImage = new Image(imageData);
         qrImage.setWidth(250);
         qrImage.setHeight(250);
         qrImage.setFixedPosition(
-                (pdf.getDefaultPageSize().getWidth() - qrImage.getImageScaledWidth() - 75) ,
-                pdf.getDefaultPageSize().getTop()- 330);
-
+                (pdf.getDefaultPageSize().getWidth() - qrImage.getImageScaledWidth() - 75),
+                pdf.getDefaultPageSize().getTop() - 330);
         document.add(qrImage);
+
         Table table = new Table(new float[]{1, 2});
         table.addCell("Email");
         table.addCell(email);
@@ -101,7 +96,7 @@ public class PDFCreator {
         table.addCell(tickets.getDateStamp());
         table.addCell("Price");
         table.addCell(String.valueOf(tickets.getPrice()));
-        table.setFixedPosition(36,300 , pdf.getDefaultPageSize().getWidth() - 72);
+        table.setFixedPosition(36, 300, pdf.getDefaultPageSize().getWidth() - 72);
         document.add(table);
         document.close();
         return response.toByteArray();

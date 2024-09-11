@@ -1,5 +1,6 @@
 package di.service.payment;
 
+import di.model.entity.quickTicket.QuickAdultTicket;
 import di.model.entity.quickTicket.QuickPurchase;
 import di.model.entity.quickTicket.QuickTicket;
 import di.repository.quickPurchase.QuickPurchaseRepository;
@@ -10,6 +11,7 @@ import di.model.dto.tickets.TicketFactory;
 import di.model.entity.ticket.AbstractTicket;
 import di.model.entity.user.User;
 import di.repository.user.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,33 +32,33 @@ public class PaymentService {
         this.quickPurchaseRepository = quickPurchaseRepository;
     }
 
-
+    @Transactional
     public void quickPurchase(QuickTicketOrder responseTicketOrder) {
         List<QuickTicket> tickets = new ArrayList<>();
-
-        for (Map.Entry<String, Integer> ticketList : responseTicketOrder.getQuantityTickets().entrySet()) {
-            QuickTicket quickTicket = TicketFactory.createQuickTicket(ticketList.getKey());
-            tickets.add(quickTicket);
-        }
-
-        if (tickets.isEmpty()) {
-            throw new RuntimeException("Ошибка: список билетов пуст.");
-        }
-
-        QuickPurchase quickPurchase = new QuickPurchase();
-        quickPurchase.getTicketList().addAll(tickets);
-
-        try {
+        if(!responseTicketOrder.getQuantityTickets().isEmpty()){
+            QuickPurchase quickPurchase = new QuickPurchase();
+            for (Map.Entry<String, Integer> ticketList : responseTicketOrder.getQuantityTickets().entrySet()) {
+                for (int i = 0; i < ticketList.getValue(); i++) {
+                    QuickTicket quickTicket = TicketFactory.createQuickTicket(ticketList.getKey());
+                    quickTicket.setQuickPurchase(quickPurchase);
+                    tickets.add(quickTicket);
+                }
+            }
+            quickPurchase.getTicketList().addAll(tickets);
+            quickPurchase.setEmail(responseTicketOrder.getEmail());
             quickPurchaseRepository.save(quickPurchase);
-        } catch (Exception e) {
-            throw new RuntimeException("Ошибка при сохранении покупки : " + e.getMessage());
+            System.out.println(quickPurchase.getTicketList().get(0));
+            try{
+                emailService.sendTicketByEmail(quickPurchase.getEmail(), quickPurchase.getTicketList());
+            }catch (Exception e){
+                System.err.println("Список билетов был пустой : "  + e.getMessage());
+            }
         }
 
-        try {
-            emailService.sendTicketByEmail(responseTicketOrder.getEmail(), tickets);
-        } catch (Exception e) {
-            System.err.println("Ошибка при отправке email: " + e.getMessage());
-        }
+
+
+
+
 
     }
 

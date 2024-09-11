@@ -1,10 +1,13 @@
 package di.model.entity.quickTicket;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -12,6 +15,7 @@ import java.util.UUID;
 @Table(name  = "quickTickets")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "ticket_type", discriminatorType = DiscriminatorType.STRING)
+@RequiredArgsConstructor
 public abstract  class QuickTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +34,16 @@ public abstract  class QuickTicket {
     private String dateStamp;
     @Getter
     @Column(updatable = false, nullable = false)
-    private UUID uniqueTicketId = UUID.randomUUID();
+    private UUID uniqueTicketId ;
 
     @ManyToOne
     @JoinColumn(name = "quick_purchase_id")
+    @JsonBackReference
     private QuickPurchase quickPurchase;  // Связь с быстрой покупкой
 
     @PrePersist
     public void onCreate() {
-        dateStamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(new java.util.Date());
+        dateStamp = new SimpleDateFormat("dd MM yyyy, HH:mm:ss").format(new java.util.Date());
         if (this.uniqueTicketId == null) {
             this.uniqueTicketId = UUID.randomUUID();
         }

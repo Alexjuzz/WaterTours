@@ -59,7 +59,7 @@ public class EmailService {
         int counter = 1;
         for (AbstractTicket tickets : user.getUserTickets()) {
             ByteArrayResource pdfResource = new ByteArrayResource(pdfCreator.createPdf(tickets));
-            helper.addAttachment("ticket " + +counter + ".pdf", pdfResource, "application/pdf");
+            helper.addAttachment("ticket " + counter + ".pdf", pdfResource, "application/pdf");
             counter++;
         }
         sender.send(message);

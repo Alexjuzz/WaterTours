@@ -28,7 +28,7 @@ public abstract class AbstractTicket {
     private String dateStamp;
     @Getter
     @Column(updatable = false, nullable = false)
-    private UUID uniqueTicketId = UUID.randomUUID();
+    private UUID uniqueTicketId;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)

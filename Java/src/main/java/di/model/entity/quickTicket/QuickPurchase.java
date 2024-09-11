@@ -1,8 +1,10 @@
 package di.model.entity.quickTicket;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,13 +12,22 @@ import java.util.List;
 @Data
 public class QuickPurchase {
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Override
+    public String toString() {
+        return "QuickPurchase{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                               '}';
+    }
 
     @Column(name = "email", nullable = false)
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name =  "quick_purchase_id")
-    private List<QuickTicket> ticketList;
+    @JsonManagedReference
+    private List<QuickTicket> ticketList = new ArrayList<>();
 }
