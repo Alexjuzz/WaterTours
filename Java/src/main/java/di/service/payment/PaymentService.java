@@ -50,6 +50,9 @@ public class PaymentService {
             System.out.println(quickPurchase.getTicketList().get(0));
             try{
                 emailService.sendTicketByEmail(quickPurchase.getEmail(), quickPurchase.getTicketList());
+                for(QuickTicket t : tickets){
+                    t.isExpired();
+                }
             }catch (Exception e){
                 System.err.println("Список билетов был пустой : "  + e.getMessage());
             }
