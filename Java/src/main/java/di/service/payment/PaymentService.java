@@ -47,7 +47,7 @@ public class PaymentService {
             quickPurchase.getTicketList().addAll(tickets);
             quickPurchase.setEmail(responseTicketOrder.getEmail());
             quickPurchaseRepository.save(quickPurchase);
-            System.out.println(quickPurchase.getTicketList().get(0));
+
             try{
                 emailService.sendTicketByEmail(quickPurchase.getEmail(), quickPurchase.getTicketList());
                 for(QuickTicket t : tickets){

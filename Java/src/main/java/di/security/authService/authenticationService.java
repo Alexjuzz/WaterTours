@@ -1,5 +1,6 @@
 package di.security.authService;
 
+import di.customexceptions.email.EmailAlreadyUsedException;
 import di.enums.Role;
 import di.model.dto.sign.SignInRequest;
 import di.model.dto.sign.SignUpRequest;
@@ -12,6 +13,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+//TODO
+// Рассмотреть регистрацию пользователя, авторизацию привести эти методы в порядок.
+// Проверить работу этих методов, потом переходить к тестам  работы с  базой.
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +41,11 @@ public class AuthenticationService {
         user.setName(request.getName());
         user.setRole(Role.ROLE_USER);
 
-        userService.create(user);
+        try{
+            userService.create(user);
+        }catch (EmailAlreadyUsedException e){
+            throw new RuntimeException("Не удалось создать пользователя.");
+        }
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
     }

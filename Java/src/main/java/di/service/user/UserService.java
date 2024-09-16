@@ -207,17 +207,14 @@ public class UserService {
 
     //endregion
 
-    ///////
-    public User create(User user) {
 
+    public User create(User user) {
+        if(repository.getUserByEmail(user.getEmail()).isPresent()){
+            throw new EmailAlreadyUsedException(String.format("Пользователь с почтной %s уже зарегистрирован",user.getEmail()));
+        }
         return repository.save(user);
     }
 
-//    public User getByUsername(String username) {
-//        return repository.findByName(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-//
-//    }
 
     public RegisterUser getRegisterUser(String email){
         return  repository.findByEmail(email)

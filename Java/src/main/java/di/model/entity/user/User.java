@@ -10,7 +10,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO Рассмотреть возможность хранения данных по разным таблицам USER/REGISTERED/GUESTUSER  - "TABLE_PER_CLASS"
+//TODO
 // Обработать нормальную регистрацию, переделать JPA!
 // создать таблицу для хранения почты + уникальный UUID, либо сделать номер телефона + UUID (Возможно написать методы для удаления с
 // базы данных отработанных билетов, также добавить удаление старых билетов.
@@ -34,6 +34,10 @@ public  class User {
 
     @Column(name = "name", nullable = false, length = 40)
     private String name;
+
+    @Column(name = "surname",nullable = true,length = 40)
+    private String surname;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
