@@ -33,7 +33,7 @@ public class PaymentService {
     @Transactional
     public void quickPurchase(QuickTicketOrder responseTicketOrder) {
         List<QuickTicket> tickets = new ArrayList<>();
-        if(!responseTicketOrder.getQuantityTickets().isEmpty()){
+        if (!responseTicketOrder.getQuantityTickets().isEmpty()) {
             QuickPurchase quickPurchase = new QuickPurchase();
             for (Map.Entry<String, Integer> ticketList : responseTicketOrder.getQuantityTickets().entrySet()) {
                 for (int i = 0; i < ticketList.getValue(); i++) {
@@ -46,13 +46,13 @@ public class PaymentService {
             quickPurchase.setEmail(responseTicketOrder.getEmail());
             quickPurchaseRepository.save(quickPurchase);
 
-            try{
+            try {
                 emailService.sendTicketByEmail(quickPurchase.getEmail(), quickPurchase.getTicketList());
-                for(QuickTicket t : tickets){
+                for (QuickTicket t : tickets) {
                     t.isExpired();
                 }
-            }catch (Exception e){
-                System.err.println("Список билетов был пустой : "  + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("Список билетов был пустой : " + e.getMessage());
             }
         }
     }

@@ -17,7 +17,9 @@ public class AuthController {
     @PostMapping("/sign-up")
     public JwtAuthenticationResponse signUp(@RequestBody SignUpRequest request) {
         System.out.println("Received sign-up request: " + request);
-        return authenticationService.signUp(request);
+        JwtAuthenticationResponse j =  authenticationService.signUp(request);
+        System.out.println(j.getToken());
+        return j;
     }
 
     @PostMapping("/sign-in")

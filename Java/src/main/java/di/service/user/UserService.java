@@ -163,7 +163,7 @@ public class UserService {
 
 
     public User create(User user) {
-          return repository.save(user);
+        return repository.save(user);
 
     }
 
@@ -196,12 +196,17 @@ public class UserService {
         user.setRole(Role.ROLE_ADMIN);
         repository.save(user);
     }
+
     public void checkEmail(String email) {
-        throw new EmailAlreadyUsedException("Email already used");
+        if (repository.getUserByEmail(email).isPresent()) {
+            throw new EmailAlreadyUsedException("Email already used");
+        }
     }
 
     public void checkTelephone(String telephoneNumber) {
-        throw new TelephoneAlreadyExistException("Telephone number already exist");
+        if (repository.getByTelephone(telephoneNumber).isPresent()) {
+            throw new TelephoneAlreadyExistException("Telephone number already exist");
+        }
     }
     //region PRIVATE METHODS
 

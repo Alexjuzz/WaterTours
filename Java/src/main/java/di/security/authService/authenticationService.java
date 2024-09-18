@@ -25,8 +25,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-
-
     /**
      * Регистрация пользователя
      *
