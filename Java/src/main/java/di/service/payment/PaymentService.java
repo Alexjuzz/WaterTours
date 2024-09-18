@@ -1,10 +1,8 @@
 package di.service.payment;
 
-import di.model.entity.quickTicket.QuickAdultTicket;
 import di.model.entity.quickTicket.QuickPurchase;
 import di.model.entity.quickTicket.QuickTicket;
 import di.repository.quickPurchase.QuickPurchaseRepository;
-import di.repository.quickPurchase.QuickTicketRepository;
 import di.service.emailsevice.service.EmailService;
 import di.model.dto.tickets.QuickTicketOrder;
 import di.model.dto.tickets.TicketFactory;
@@ -57,12 +55,6 @@ public class PaymentService {
                 System.err.println("Список билетов был пустой : "  + e.getMessage());
             }
         }
-
-
-
-
-
-
     }
 
 

@@ -26,7 +26,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
-public  class User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +35,8 @@ public  class User {
     @Column(name = "name", nullable = false, length = 40)
     private String name;
 
-    @Column(name = "surname",nullable = true,length = 40)
+    @Column(name = "surname", nullable = true, length = 40)
     private String surname;
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -46,6 +45,7 @@ public  class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Telephone telephone;
+
     @Column(name = "email", nullable = false, length = 250)
     private String email;
 

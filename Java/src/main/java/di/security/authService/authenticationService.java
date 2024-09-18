@@ -1,6 +1,5 @@
 package di.security.authService;
 
-import di.customexceptions.email.EmailAlreadyUsedException;
 import di.enums.Role;
 import di.model.dto.sign.SignInRequest;
 import di.model.dto.sign.SignUpRequest;
@@ -35,17 +34,14 @@ public class AuthenticationService {
      * @return токен
      */
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
+        userService.checkEmail(request.getEmail());
         var user = new RegisterUser();
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setName(request.getName());
         user.setRole(Role.ROLE_USER);
 
-        try{
-            userService.create(user);
-        }catch (EmailAlreadyUsedException e){
-            throw new RuntimeException("Не удалось создать пользователя.");
-        }
+        userService.create(user);
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
     }
@@ -54,6 +50,7 @@ public class AuthenticationService {
      *
      * @param request данные пользователя
      * @return токен
+     * Изменена логика > loadByUserName а передаем параметр вместо имени пользователя(или логина) имейл - сделано для точной уникальности.
      */
     public JwtAuthenticationResponse signIn(SignInRequest request){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),

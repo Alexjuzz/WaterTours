@@ -86,45 +86,7 @@ public class UserService {
 
     }
 
-    private ResponseUser convertUserToResponseUser(User user) {
-        ResponseUser response = new ResponseUser();
 
-        response.setId(user.getId());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
-        response.setTelephone(user.getTelephone());
-
-
-        if(user instanceof RegisterUser registerUser) {
-            response.setRole(registerUser.getRole());
-            response.setPassword(registerUser.getPassword());
-        }
-
-        return response;
-    }
-
-
-    //region 26/04/2024
-
-    /**
-     * Регистрирует нового пользователя, проверяя, что электронная почта и телефонный номер еще не использовались.
-     *
-     * @param user Данные пользователя для регистрации.
-     * @return ResponseRegistryUser Данные зарегистрированного пользователя.
-     * @throws EmailAlreadyUsedException      если указанный email уже используется.
-     * @throws TelephoneAlreadyExistException если указанный телефонный номер уже зарегистрирован.
-     */
-
-
-    public boolean checkValidData(ResponseUser user) {
-        if (repository.getUserByEmail(user.getEmail()).isPresent()) {
-            throw new EmailAlreadyUsedException("Email already used");
-        }
-        if (telephoneRepository.existsByNumber(user.getTelephone().getNumber())) {
-            throw new TelephoneAlreadyExistException("Telephone number already exist");
-        }
-        return true;
-    }
 // endregion
 
     //region GUEST USER
@@ -159,14 +121,6 @@ public class UserService {
     //endregion
 
 
-    //region Add telephone to user
-    private Telephone addTelephoneToUser(String number, User user) {
-        Telephone telephone = new Telephone(number);
-        telephone.setUser(user);
-        return telephone;
-    }
-
-    //endregion
     //TODO добвить проверку билетов через repository.
     //region Quick Purchase
 
@@ -196,12 +150,12 @@ public class UserService {
     }
 
     public String deleteUser(String email) {
-            Optional<User>  getUser = repository.getUserByEmail(email);
-            if(getUser.isEmpty()){
-                throw new UserNotFoundException(String.format("Пользователь с почтой %s не найден", email));
-            }
-            repository.delete(getUser.get());
-            return "Пользователь успешно удален.";
+        Optional<User> getUser = repository.getUserByEmail(email);
+        if (getUser.isEmpty()) {
+            throw new UserNotFoundException(String.format("Пользователь с почтой %s не найден", email));
+        }
+        repository.delete(getUser.get());
+        return "Пользователь успешно удален.";
     }
 
 
@@ -209,15 +163,13 @@ public class UserService {
 
 
     public User create(User user) {
-        if(repository.getUserByEmail(user.getEmail()).isPresent()){
-            throw new EmailAlreadyUsedException(String.format("Пользователь с почтной %s уже зарегистрирован",user.getEmail()));
-        }
-        return repository.save(user);
+          return repository.save(user);
+
     }
 
 
-    public RegisterUser getRegisterUser(String email){
-        return  repository.findByEmail(email)
+    public RegisterUser getRegisterUser(String email) {
+        return repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
@@ -231,6 +183,7 @@ public class UserService {
     public UserDetailsService userDetailsService() {
         return this::getRegisterUser;
     }
+
     public RegisterUser getCurrentUser() {
         // Получение имени пользователя из контекста Spring Security
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -243,5 +196,40 @@ public class UserService {
         user.setRole(Role.ROLE_ADMIN);
         repository.save(user);
     }
+    public void checkEmail(String email) {
+        throw new EmailAlreadyUsedException("Email already used");
+    }
 
+    public void checkTelephone(String telephoneNumber) {
+        throw new TelephoneAlreadyExistException("Telephone number already exist");
+    }
+    //region PRIVATE METHODS
+
+
+    private ResponseUser convertUserToResponseUser(User user) {
+        ResponseUser response = new ResponseUser();
+
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setTelephone(user.getTelephone());
+
+
+        if (user instanceof RegisterUser registerUser) {
+            response.setRole(registerUser.getRole());
+            response.setPassword(registerUser.getPassword());
+        }
+
+        return response;
+    }
+
+    //region Add telephone to user
+    private Telephone addTelephoneToUser(String number, User user) {
+        Telephone telephone = new Telephone(number);
+        telephone.setUser(user);
+        return telephone;
+    }
+
+    //endregion
+    //endregion
 }

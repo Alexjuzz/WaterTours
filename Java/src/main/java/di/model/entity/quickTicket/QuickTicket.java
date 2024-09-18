@@ -7,11 +7,11 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Entity
 @Data
@@ -35,6 +35,7 @@ public abstract class QuickTicket {
 
     @Column(updatable = false)
     private String dateStamp;
+
     @Getter
     @Column(updatable = false, nullable = false)
     private UUID uniqueTicketId;
@@ -42,6 +43,7 @@ public abstract class QuickTicket {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TicketStatus ticketStatus;
+
 
     @ManyToOne
     @JoinColumn(name = "quick_purchase_id")
@@ -58,7 +60,7 @@ public abstract class QuickTicket {
     }
 
     public boolean changeAvailableTicket() {
-        if (isValid()) {
+        if (valid) {
             valid = false;
             ticketStatus = TicketStatus.USED;
             return true;
@@ -67,18 +69,13 @@ public abstract class QuickTicket {
     }
 
     public void isExpired() {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("dd MM yyyy, HH:mm:ss");
-            Date purchaseDate = format.parse(this.dateStamp);
-            Date currentDate = new Date();
-            long diff = currentDate.getTime() - purchaseDate.getTime();
-            long diffDays = TimeUnit.DAYS.convert(diff, TimeUnit.MICROSECONDS);
-            if (diffDays > 5) {
-                ticketStatus = TicketStatus.EXPIRED;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        LocalDateTime purchaseDate = LocalDateTime.parse(this.dateStamp, DateTimeFormatter.ofPattern("dd MM yyyy, HH:mm:ss"));
+        LocalDateTime currentDate = LocalDateTime.now();
 
+        long diffDays = ChronoUnit.DAYS.between(purchaseDate, currentDate);
+
+        if (diffDays > 5) {
+            ticketStatus = TicketStatus.EXPIRED;
+        }
     }
 }
