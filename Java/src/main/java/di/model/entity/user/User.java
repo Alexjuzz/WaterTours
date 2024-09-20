@@ -21,6 +21,8 @@ import java.util.List;
 // Возможно убрать класс USER  - сделать абстрактным.
 
 
+
+
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

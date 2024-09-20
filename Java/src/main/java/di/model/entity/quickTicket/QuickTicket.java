@@ -2,6 +2,7 @@ package di.model.entity.quickTicket;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import di.enums.TicketStatus;
+import di.model.entity.telephone.Telephone;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;

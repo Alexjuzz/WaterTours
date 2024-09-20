@@ -26,6 +26,7 @@ public class QuickPurchase {
     @Column(name = "email", nullable = false)
     private String email;
 
+
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name =  "quick_purchase_id")
     @JsonManagedReference
