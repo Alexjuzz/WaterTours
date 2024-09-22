@@ -1,6 +1,8 @@
 package di.model.entity.quickTicket;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import di.model.entity.telephone.Telephone;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,6 +28,10 @@ public class QuickPurchase {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "telephone_id",referencedColumnName = "id",nullable = false)
+    @JsonManagedReference
+    private Telephone telephone;
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name =  "quick_purchase_id")

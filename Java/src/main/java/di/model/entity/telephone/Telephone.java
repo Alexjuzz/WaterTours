@@ -1,6 +1,8 @@
 package di.model.entity.telephone;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import di.model.entity.quickTicket.QuickPurchase;
 import di.model.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,5 +48,9 @@ public class Telephone {
     @JsonBackReference
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
+
+    @OneToOne(mappedBy = "telephone")
+    @JsonBackReference
+    private QuickPurchase quickPurchase;
 
 }

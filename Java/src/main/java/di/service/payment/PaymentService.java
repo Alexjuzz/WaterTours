@@ -1,8 +1,11 @@
 package di.service.payment;
 
+import di.customexceptions.telephone.TelephoneNotFoundException;
 import di.model.entity.quickTicket.QuickPurchase;
 import di.model.entity.quickTicket.QuickTicket;
+import di.model.entity.telephone.Telephone;
 import di.repository.quickPurchase.QuickPurchaseRepository;
+import di.repository.telephone.TelephoneRepository;
 import di.service.emailsevice.service.EmailService;
 import di.model.dto.tickets.QuickTicketOrder;
 import di.model.dto.tickets.TicketFactory;
@@ -22,12 +25,14 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final QuickPurchaseRepository quickPurchaseRepository;
+    private final TelephoneRepository telephoneRepository;
 
     @Autowired
-    public PaymentService(UserRepository userRepository, EmailService emailService, QuickPurchaseRepository quickPurchaseRepository) {
+    public PaymentService(UserRepository userRepository, EmailService emailService, QuickPurchaseRepository quickPurchaseRepository, TelephoneRepository telephoneRepository) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.quickPurchaseRepository = quickPurchaseRepository;
+        this.telephoneRepository = telephoneRepository;
     }
 
     @Transactional
@@ -42,6 +47,14 @@ public class PaymentService {
                     tickets.add(quickTicket);
                 }
             }
+
+
+            Telephone userPhoneNumber = findOrCreateTelephone(responseTicketOrder.getTelephone());
+
+            quickPurchase.setTelephone(userPhoneNumber);
+
+            userPhoneNumber.setQuickPurchase(quickPurchase);
+
             quickPurchase.getTicketList().addAll(tickets);
             quickPurchase.setEmail(responseTicketOrder.getEmail());
             quickPurchaseRepository.save(quickPurchase);
@@ -76,5 +89,28 @@ public class PaymentService {
             }
         }
     }
+
+    private boolean findPhone(String number) {
+        if(!number.isEmpty())  return telephoneRepository.existsByNumber(number);
+        return false;
+    }
+
+    private Telephone getPhone(String number) {
+        return telephoneRepository.getTelephoneByNumber(number).orElseThrow(() -> new TelephoneNotFoundException("Телефон не найден"));
+    }
+    private Telephone createTelephone(String number){
+        return  new Telephone(number);
+    }
+
+    private Telephone findOrCreateTelephone(String number){
+        if(findPhone(number)){
+
+            return getPhone(number);
+        }else {
+            return createTelephone(number);
+        }
+    }
+
 }
+
 //endregion

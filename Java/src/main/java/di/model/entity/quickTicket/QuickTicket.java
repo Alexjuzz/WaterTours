@@ -49,7 +49,7 @@ public abstract class QuickTicket {
     @ManyToOne
     @JoinColumn(name = "quick_purchase_id")
     @JsonBackReference
-    private QuickPurchase quickPurchase;  // Связь с быстрой покупкой
+    private QuickPurchase quickPurchase;
 
     @PrePersist
     public void onCreate() {
